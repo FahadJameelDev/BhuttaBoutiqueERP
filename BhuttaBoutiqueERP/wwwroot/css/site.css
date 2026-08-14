@@ -1,0 +1,244 @@
+/* ================================================================= */
+/* Bhutta Boutique ERP - Elite Multinational SaaS site.css (Fixed)   */
+/* ================================================================= */
+
+:root {
+    --primary: #15803d;
+    --primary-light: #16a34a;
+    --primary-dark: #14532d;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --info: #06B6D4;
+    --bg-light: #F8FAFC;
+    --card-bg: #FFFFFF;
+    --border-color: #E2E8F0;
+    --text-primary: #0F172A;
+    --text-secondary: #64748B;
+}
+
+/* Global Reset & Typography */
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-primary);
+    margin: 0;
+    padding-top: 104px; /* Navbar (60px) + Subheader (44px) */
+    font-size: 13px;
+    letter-spacing: -0.01em;
+}
+
+/* Top Navbar */
+.enterprise-navbar {
+    background: linear-gradient(135deg, #14532d 0%, #166534 100%) !important;
+    height: 60px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.brand-icon-box {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.user-badge {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Sub-Header Strip */
+.enterprise-subheader {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    z-index: 1020;
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: thin;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+    .enterprise-subheader::-webkit-scrollbar {
+        height: 3px;
+    }
+
+    .enterprise-subheader::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 4px;
+    }
+
+    .enterprise-subheader .nav-pills .nav-link {
+        color: var(--text-secondary);
+        font-weight: 500;
+        font-size: 12px;
+        border-radius: 20px;
+        padding: 4px 14px;
+        background: #F1F5F9;
+        border: 1px solid var(--border-color);
+        transition: all 0.2s ease;
+    }
+
+        .enterprise-subheader .nav-pills .nav-link:hover {
+            background-color: #E2E8F0;
+            color: var(--text-primary);
+        }
+
+        .enterprise-subheader .nav-pills .nav-link.active {
+            background-color: #14532d !important;
+            color: #ffffff !important;
+            border-color: transparent;
+            box-shadow: 0 2px 6px rgba(20, 83, 45, 0.25);
+            font-weight: 600;
+        }
+
+/* Main Content Container - Compact Padding to eliminate empty gap */
+#main-content {
+    max-width: 1550px;
+    margin: 0 auto;
+    padding: 12px 28px 24px 28px !important;
+    height: auto;
+}
+
+/* 🌟 Module Header Strip - Compact & Sticky */
+.sticky-header-strip {
+    position: sticky;
+    top: 104px; /* Matches exact offset below subheader */
+    z-index: 98;
+    background-color: var(--bg-light);
+    padding: 8px 0 8px 0; /* Tightened padding to reduce space */
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Cards Design System */
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s ease;
+}
+
+    .card:hover {
+        box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+        border-color: #CBD5E1;
+    }
+
+/* Tables Design System - Fixed Header with proper relative scrolling */
+.sticky-table-wrap {
+    max-height: 580px;
+    overflow-y: auto;
+    position: relative;
+    background-color: #ffffff;
+    border-radius: 0 0 12px 12px;
+}
+
+.table {
+    color: var(--text-primary);
+    margin-bottom: 0;
+}
+
+    .table thead {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .table th {
+        background-color: #14532d !important;
+        color: #ffffff !important;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 10.5px;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 12px 14px;
+    }
+
+    .table td {
+        padding: 12px 14px;
+        vertical-align: middle;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 12.5px;
+    }
+
+    .table tbody tr:hover {
+        background-color: #F1F5F9;
+    }
+
+/* Toast Container Positioning Fix */
+.toast-container {
+    position: fixed;
+    top: 65px;
+    right: 24px;
+    z-index: 1090;
+}
+
+/* Modals Design System */
+.modal-content {
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header, .modal-footer {
+    border-color: var(--border-color);
+    background-color: #F8FAFC;
+    padding: 16px 20px;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+/* Forms Customization */
+.form-control, .form-select {
+    border: 1px solid #CBD5E1;
+    background-color: #FFFFFF;
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 7px 11px;
+    font-size: 13px;
+}
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.1);
+    }
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    font-size: 12px;
+}
+
+/* Footer completely removed */
+.enterprise-footer {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 115px;
+    }
+
+    .sticky-header-strip {
+        top: 115px;
+    }
+}

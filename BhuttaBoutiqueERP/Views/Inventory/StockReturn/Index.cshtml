@@ -1,0 +1,72 @@
+﻿@model IEnumerable<BhuttaBoutiqueERP.Models.Inventory.Entities.StockReturn>
+
+@{
+    ViewData["Title"] = "Stock Returns";
+}
+
+<!-- Sticky Header Strip with Professional Spacing -->
+<div class="sticky-header-strip d-flex justify-content-between align-items-center">
+    <div>
+        <h2 class="text-dark fw-bold mb-1" style="font-size: 20px;">
+            <i class="fas fa-undo me-2 text-warning"></i>Stock Returns
+        </h2>
+        <p class="text-secondary mb-0" style="font-size: 12.5px;">Manage product returns and inventory adjustments efficiently.</p>
+    </div>
+    <!-- AJAX Modal Trigger Button -->
+    <button type="button" class="btn btn-warning px-3 py-2 shadow-sm open-modal-btn text-dark" data-url="@Url.Action("Create")" style="font-weight: 600; border-radius: 8px;">
+        <i class="fas fa-plus me-1"></i> New Return
+    </button>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="sticky-table-wrap">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Stock Out Ref</th>
+                        <th>Quantity</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><strong>@item.Item?.Name</strong></td>
+                                <td>#@item.StockOutId</td>
+                                <td>@item.Quantity.ToString("0.##")</td>
+                                <td>@item.Date.ToString("dd MMM yyyy")</td>
+                                <td>
+                                    <span class="badge @(item.Status == "Completed" ? "bg-success" : "bg-warning text-dark") px-2 py-1">
+                                        @item.Status
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <!-- AJAX Modal Delete Trigger Button -->
+                                    <button type="button" class="btn btn-sm btn-outline-danger open-modal-btn" data-url="@Url.Action("Delete", new { id = item.Id })" title="Delete Record">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <i class="fas fa-inbox fa-2x d-block mb-2 opacity-50"></i>
+                                <p class="mb-0">No stock returns found</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
