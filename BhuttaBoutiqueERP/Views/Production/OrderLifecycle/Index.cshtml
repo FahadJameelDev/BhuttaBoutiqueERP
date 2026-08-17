@@ -1,0 +1,120 @@
+﻿@model IEnumerable<BhuttaBoutiqueERP.Models.Production.Entities.OrderLifecycle>
+
+@{
+    ViewData["Title"] = "Order Lifecycle";
+}
+
+<!-- Sticky Header Strip -->
+<div class="sticky-header-strip">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+                <i class="fas fa-timeline text-primary"></i> Order Lifecycle
+            </h3>
+            <p class="text-secondary small mb-0">Track and manage production stages from cutting to quality control.</p>
+        </div>
+        <button type="button" class="btn btn-primary px-4 rounded-pill shadow-sm open-modal-btn" data-url="@Url.Action("Create")">
+            <i class="fas fa-plus me-1"></i> New Stage
+        </button>
+    </div>
+</div>
+
+<!-- Main Content Card -->
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card-body p-0">
+        <div class="table-responsive sticky-table-wrap">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-secondary text-uppercase fs-7">
+                    <tr>
+                        <th class="ps-4">Order #</th>
+                        <th>Employee</th>
+                        <th>Stage</th>
+                        <th>Status</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            var stageColors = new Dictionary<string, string>
+                            {
+                                { "Cutting", "bg-info" },
+                                { "Stitching", "bg-warning text-dark" },
+                                { "Embroidery", "bg-primary" },
+                                { "Finishing", "bg-secondary" },
+                                { "QC", "bg-danger" }
+                            };
+                            var stageColor = stageColors.ContainsKey(item.Stage) ? stageColors[item.Stage] : "bg-secondary";
+
+                            <tr>
+                                <td class="ps-4"><span class="fw-semibold text-dark">@item.Order?.OrderNumber</span></td>
+                                <td>@item.Employee?.Name</td>
+                                <td><span class="badge @stageColor rounded-pill px-2">@item.Stage</span></td>
+                                <td>
+                                    <span class="badge @(item.Status == "Completed" ? "bg-success" : item.Status == "InProgress" ? "bg-info" : "bg-warning text-dark") rounded-pill px-2">
+                                        @item.Status
+                                    </span>
+                                </td>
+                                <td>@item.StartDate.ToString("dd MMM yyyy")</td>
+                                <td>@(item.EndDate?.ToString("dd MMM yyyy") ?? "—")</td>
+                                <td class="text-end pe-4">
+                                    <button type="button" class="btn btn-sm btn-light text-primary border me-1 open-modal-btn" data-url="@Url.Action("Edit", new { id = item.Id })" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    @if (item.Status != "Completed")
+                                    {
+                                        <button type="button" class="btn btn-sm btn-light text-success border me-1 complete-stage-btn" data-url="@Url.Action("Complete", new { id = item.Id })" title="Complete">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    }
+                                    <a href="@Url.Action("ByOrder", new { orderId = item.OrderId })" class="btn btn-sm btn-outline-secondary" title="View by Order">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-5">
+                                <i class="fas fa-inbox fa-3x d-block mb-2 opacity-25"></i>
+                                <p class="mb-0 fw-medium">No lifecycle records found.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).on('click', '.complete-stage-btn', function (e) {
+            e.preventDefault();
+            var url = $(this).data('url');
+
+            if (confirm('Mark this stage as completed?')) {
+                $.get(url)
+                    .done(function (response) {
+                        if (response.success) {
+                            showToast(response.message || 'Stage completed!', 'success');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 500);
+                        } else {
+                            showToast(response.message || 'Failed to complete.', 'danger');
+                        }
+                    })
+                    .fail(function () {
+                        showToast('An error occurred.', 'danger');
+                    });
+            }
+        });
+    </script>
+}

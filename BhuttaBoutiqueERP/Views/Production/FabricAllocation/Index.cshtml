@@ -1,0 +1,143 @@
+﻿@model IEnumerable<BhuttaBoutiqueERP.Models.Production.Entities.DemandAllocation>
+
+@{
+    ViewData["Title"] = "Fabric Allocation";
+}
+
+<!-- Sticky Header Strip -->
+<div class="sticky-header-strip">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+                <i class="fas fa-arrows-split-up-and-left text-primary"></i> Fabric Allocation
+            </h3>
+            <p class="text-secondary small mb-0">Allocate fabric to production orders and manage inventory assignments.</p>
+        </div>
+        <button type="button" class="btn btn-primary px-4 rounded-pill shadow-sm open-modal-btn" data-url="@Url.Action("Create")">
+            <i class="fas fa-plus me-1"></i> New Allocation
+        </button>
+    </div>
+</div>
+
+<!-- Main Content Card -->
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card-body p-0">
+        <div class="table-responsive sticky-table-wrap">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-secondary text-uppercase fs-7">
+                    <tr>
+                        <th class="ps-4">Order #</th>
+                        <th>Item</th>
+                        <th>Demand Qty</th>
+                        <th>Allocated Qty</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4"><span class="fw-semibold text-dark">@item.Order?.OrderNumber</span></td>
+                                <td>@item.Item?.Name</td>
+                                <td>@item.DemandQuantity.ToString("0.##")</td>
+                                <td>
+                                    <span class="fw-bold @(item.AllocatedQuantity > 0 ? "text-success" : "text-muted")">
+                                        @item.AllocatedQuantity.ToString("0.##")
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge @(item.Status == "Completed" ? "bg-success" : item.Status == "Allocated" ? "bg-info" : "bg-warning text-dark") rounded-pill px-2">
+                                        @item.Status
+                                    </span>
+                                </td>
+                                <td>@item.Date.ToString("dd MMM yyyy")</td>
+                                <td class="text-end pe-4">
+                                    <button type="button" class="btn btn-sm btn-light text-primary border me-1 open-modal-btn" data-url="@Url.Action("Edit", new { id = item.Id })" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    @if (item.AllocatedQuantity > 0)
+                                    {
+                                        <button type="button" class="btn btn-sm btn-light text-warning border me-1 deallocate-btn" data-url="@Url.Action("Deallocate", new { id = item.Id })" title="Deallocate">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    }
+                                    <a href="@Url.Action("ByOrder", new { orderId = item.OrderId })" class="btn btn-sm btn-outline-secondary" title="View by Order">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-5">
+                                <i class="fas fa-inbox fa-3x d-block mb-2 opacity-25"></i>
+                                <p class="mb-0 fw-medium">No allocations found.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Deallocate Confirmation Modal -->
+<div class="modal fade" id="deallocateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title fw-bold">
+                    <i class="fas fa-undo me-2"></i>Deallocate Fabric
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">Are you sure you want to deallocate this fabric? This will restore the stock.</p>
+                <input type="hidden" id="deallocateUrl" value="" />
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-warning px-4" id="confirmDeallocate">
+                    <i class="fas fa-undo me-1"></i> Yes, Deallocate
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).on('click', '.deallocate-btn', function (e) {
+            e.preventDefault();
+            var url = $(this).data('url');
+            $('#deallocateUrl').val(url);
+            $('#deallocateModal').modal('show');
+        });
+
+        $('#confirmDeallocate').on('click', function () {
+            var url = $('#deallocateUrl').val();
+
+            $.get(url)
+                .done(function (response) {
+                    if (response.success) {
+                        showToast(response.message || 'Deallocated successfully!', 'success');
+                        $('#deallocateModal').modal('hide');
+                        setTimeout(function () {
+                            location.reload();
+                        }, 500);
+                    } else {
+                        showToast(response.message || 'Failed to deallocate.', 'danger');
+                    }
+                })
+                .fail(function () {
+                    showToast('An error occurred.', 'danger');
+                });
+        });
+    </script>
+}

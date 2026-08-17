@@ -16,20 +16,20 @@ const moduleFeatures = {
     "Services": [
         { name: "Service Catalog", url: "/Services/Catalog", icon: "fa-book-open" },
         { name: "Customer Management", url: "/Services/Customers", icon: "fa-address-book" },
-        { name: "Order Booking", url: "/Services/OrderBooking", icon: "fa-cart-shopping" },
+        { name: "Order Booking", url: "/Services/Orders", icon: "fa-cart-shopping" },
         { name: "Measurements", url: "/Services/Measurements", icon: "fa-ruler-combined" },
         { name: "Design Library", url: "/Services/DesignLibrary", icon: "fa-palette" },
-        { name: "Payment Management", url: "/Services/Payment", icon: "fa-file-invoice-dollar" },
+        { name: "Payment Management", url: "/Services/Payments", icon: "fa-file-invoice-dollar" },
         { name: "Service Reports", url: "/Services/Reports", icon: "fa-chart-pie" }
     ],
     "Production": [
         { name: "Fabric Demand", url: "/Production/FabricDemand", icon: "fa-clipboard-list" },
         { name: "Demand List", url: "/Production/DemandList", icon: "fa-list-check" },
         { name: "Stock Check", url: "/Production/StockCheck", icon: "fa-warehouse" },
-        { name: "Fabric Allocation", url: "/Production/Allocation", icon: "fa-arrows-split-up-and-left" },
+        { name: "Fabric Allocation", url: "/Production/FabricAllocation", icon: "fa-arrows-split-up-and-left" },
         { name: "Fabric Issue (DO)", url: "/Production/FabricIssue", icon: "fa-file-export" },
-        { name: "Order Lifecycle", url: "/Production/Lifecycle", icon: "fa-timeline" },
-        { name: "Production Reports", url: "/Production/Reports", icon: "fa-chart-line" }
+        { name: "Order Lifecycle", url: "/Production/OrderLifecycle", icon: "fa-timeline" },
+        { name: "Production Reports", url: "/Production/ProductionReports", icon: "fa-chart-line" }
     ],
     "HR": [
         { name: "Employee Master", url: "/HR/EmployeeMaster", icon: "fa-id-badge" },
@@ -57,43 +57,32 @@ $(document).ready(function () {
         $('body').append('<div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1090; margin-top: 65px;"></div>');
     }
 
-    // 1. Initialize Dashboard/Default view on layout load safely
-    if ($('#main-content').length > 0) {
-        let activeSubLink = $('#sub-menu-list .nav-link.active');
-        let initialUrl = activeSubLink.length > 0 ? activeSubLink.data('url') : '/Inventory/Items';
-        if (window.location.pathname.toLowerCase() !== '/home/index' && window.location.pathname !== '/') {
-        }
-    }
+    // 🌟 SMART AUTO-HIGHLIGHT: URL match karke sahi module aur sub-menu highlight karega
+    highlightActiveMenuBasedOnUrl();
 
-    // 2. Main Module Switcher Handler
+    // 2. Main Module Switcher Handler ✅ FIXED
     $(document).on('click', '.module-link', function (e) {
         e.preventDefault();
-        $('.module-link').removeClass('active bg-white text-dark fw-semibold').addClass('text-white');
-        $(this).addClass('active bg-white text-dark fw-semibold').removeClass('text-white');
+        $('.module-link').removeClass('active').css({
+            'background': 'transparent',
+            'border': 'none'
+        }).addClass('text-white');
+
+        $(this).addClass('active').css({
+            'background': 'rgba(255, 255, 255, 0.15)',
+            'border': '1px solid rgba(255, 255, 255, 0.2)'
+        }).removeClass('text-white');
 
         let moduleName = $(this).data('module');
         let features = moduleFeatures[moduleName];
 
         if (features && features.length > 0) {
-            let subMenuHtml = '';
-            features.forEach(function (feature, index) {
-                let activeClass = (index === 0) ? 'active' : '';
-                let iconClass = feature.icon ? `<i class="fa-solid ${feature.icon} me-1"></i>` : '';
-                subMenuHtml += `
-                    <li class="nav-item">
-                        <a class="nav-link btn-sm text-nowrap rounded-pill px-3 ${activeClass}" href="#" data-url="${feature.url}">
-                            ${iconClass} ${feature.name}
-                        </a>
-                    </li>
-                `;
-            });
-
-            $('#sub-menu-list').html(subMenuHtml);
-            loadMainContent(features[0].url);
+            // ✅ FIX 1: -1 → 0 (pehla feature active)
+            renderSubMenu(moduleName, 0);
         }
     });
 
-    // 3. Sub-menu Navigation Handler
+    // 3. Sub-menu Navigation Handler ✅ FIXED
     $(document).on('click', '#sub-menu-list .nav-link', function (e) {
         e.preventDefault();
         $('#sub-menu-list .nav-link').removeClass('active');
@@ -101,7 +90,10 @@ $(document).ready(function () {
 
         let url = $(this).data('url');
         if (url) {
+            // ✅ FIX 2: URL update + force highlight
+            history.pushState(null, '', url);
             loadMainContent(url);
+            highlightActiveMenuBasedOnUrl();
         }
     });
 
@@ -139,6 +131,66 @@ $(document).ready(function () {
             });
     }
 
+    // Helper: Render Sub-menu items dynamically
+    function renderSubMenu(moduleName, activeIndex) {
+        let features = moduleFeatures[moduleName];
+        if (!features) return;
+
+        let subMenuHtml = '';
+        features.forEach(function (feature, index) {
+            let activeClass = (index === activeIndex) ? 'active' : '';
+            let iconClass = feature.icon ? `<i class="fa-solid ${feature.icon} me-1"></i>` : '';
+            subMenuHtml += `
+                <li class="nav-item">
+                    <a class="nav-link btn-sm text-nowrap rounded-pill px-3 ${activeClass}" href="#" data-url="${feature.url}">
+                        ${iconClass} ${feature.name}
+                    </a>
+                </li>
+            `;
+        });
+        $('#sub-menu-list').html(subMenuHtml);
+    }
+
+    // Helper: Match current path to correct module and sub-feature
+    function highlightActiveMenuBasedOnUrl() {
+        let currentPath = window.location.pathname.toLowerCase();
+        let foundModule = null;
+        let foundIndex = 0;
+
+        for (let mod in moduleFeatures) {
+            let list = moduleFeatures[mod];
+            for (let i = 0; i < list.length; i++) {
+                if (currentPath.includes(list[i].url.toLowerCase())) {
+                    foundModule = mod;
+                    foundIndex = i;
+                    break;
+                }
+            }
+            if (foundModule) break;
+        }
+
+        if (!foundModule) {
+            foundModule = "Inventory";
+            foundIndex = 0;
+        }
+
+        $('.module-link').each(function () {
+            if ($(this).data('module') === foundModule) {
+                $(this).addClass('active').css({
+                    'background': 'rgba(255, 255, 255, 0.15)',
+                    'border': '1px solid rgba(255, 255, 255, 0.2)'
+                }).removeClass('text-white');
+            } else {
+                $(this).removeClass('active').css({
+                    'background': 'transparent',
+                    'border': 'none'
+                }).addClass('text-white');
+            }
+        });
+
+        renderSubMenu(foundModule, foundIndex);
+    }
+
     // 5. Open Modal via AJAX
     $(document).on('click', '.open-modal-btn', function (e) {
         e.preventDefault();
@@ -160,7 +212,7 @@ $(document).ready(function () {
             });
     });
 
-    // 6. AJAX Form Submission Handler (Updated: Image 2 style Center Success Popup)
+    // 6. AJAX Form Submission Handler
     $(document).on('submit', '.ajax-form', function (e) {
         e.preventDefault();
         let form = $(this);
@@ -171,14 +223,12 @@ $(document).ready(function () {
             data: form.serialize(),
             success: function (response) {
                 if (typeof response === 'object' && response.success) {
-                    // Step A: Pehle wala form modal chupayein
                     let modalElement = document.getElementById('globalModal');
                     if (modalElement) {
                         let modal = bootstrap.Modal.getInstance(modalElement);
                         if (modal) modal.hide();
                     }
 
-                    // Step B: Image 2 ki tarah center mein khubsurat success popup dikhayein
                     let successPopupHtml = `
                         <div class="modal fade" id="successPopupModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
                             <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
@@ -200,7 +250,6 @@ $(document).ready(function () {
                         </div>
                     `;
 
-                    // Purana koi success popup ho toh hata dein, phir naya append karein
                     $('#successPopupModal').remove();
                     $('body').append(successPopupHtml);
 
@@ -208,20 +257,19 @@ $(document).ready(function () {
                     let successModal = new bootstrap.Modal(successModalEl);
                     successModal.show();
 
-                    // Step C: Jab user OK dabaye ya popup band ho, toh table refresh ho jaye
                     let activeSubLink = $('#sub-menu-list .nav-link.active');
-                    let currentUrl = response.redirectUrl || (activeSubLink.length > 0 ? activeSubLink.data('url') : '/Inventory/Items');
+                    let currentUrl = response.redirectUrl || (activeSubLink.length > 0 ? activeSubLink.data('url') : window.location.pathname);
 
                     $(document).on('click', '#successOkBtn', function () {
                         successModal.hide();
                         $('#successPopupModal').remove();
                         if (currentUrl) {
+                            history.pushState(null, '', currentUrl);
                             loadMainContent(currentUrl);
                         }
                     });
 
                 } else {
-                    // Validation failure or HTML partial return inside modal
                     $('#modal-content-body').html(response);
                 }
             },
@@ -232,7 +280,7 @@ $(document).ready(function () {
     });
 });
 
-// 7. Global Toast Notification System (Properly Containerized)
+// 7. Global Toast Notification System
 function showToast(message, type = 'success') {
     let bgColors = {
         'success': 'bg-success text-white',

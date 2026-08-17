@@ -1,7 +1,11 @@
-using Microsoft.EntityFrameworkCore;
 using BhuttaBoutiqueERP.Data;
 using BhuttaBoutiqueERP.Models.Auth.Entities;
+using BhuttaBoutiqueERP.Services.Auth;
+
 using BhuttaBoutiqueERP.Services.Inventory; // 📌 Yeh namespace lazmi add karein taake services recognize hon
+using BhuttaBoutiqueERP.Services.Production;  // ✅ PRODUCTION NAMESPACE
+using BhuttaBoutiqueERP.Services.Services; // 📌 Services Module Namespace
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -18,6 +22,8 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+// ── AUTH SERVICES ──
+builder.Services.AddScoped<IUserService, UserService>();
 
 // ==========================================
 // 📌 3️⃣ INVENTORY SERVICES REGISTRATION (Yahan add ki hain)
@@ -28,6 +34,28 @@ builder.Services.AddScoped<IStockOutService, StockOutService>();
 builder.Services.AddScoped<IStockReturnService, StockReturnService>();
 builder.Services.AddScoped<ISupplierService, SupplierService>();
 builder.Services.AddScoped<IWastageService, WastageService>();
+
+// ==========================================
+// 📌 3.1️⃣ SERVICES MODULE SERVICES REGISTRATION
+// ==========================================
+builder.Services.AddScoped<IServiceCatalogService, ServiceCatalogService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IBulkOrderService, BulkOrderService>();
+builder.Services.AddScoped<IMeasurementService, MeasurementService>();
+builder.Services.AddScoped<IDesignLibraryService, DesignLibraryService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IServiceReportService, ServiceReportService>();
+// ==========================================
+// 📌 PRODUCTION SERVICES ✅ NEW
+// ==========================================
+builder.Services.AddScoped<IFabricDemandService, FabricDemandService>();
+builder.Services.AddScoped<IDemandListService, DemandListService>();
+builder.Services.AddScoped<IStockCheckService, StockCheckService>();
+builder.Services.AddScoped<IFabricAllocationService, FabricAllocationService>();
+builder.Services.AddScoped<IFabricIssueService, FabricIssueService>();
+builder.Services.AddScoped<IOrderLifecycleService, OrderLifecycleService>();
+builder.Services.AddScoped<IProductionReportService, ProductionReportService>();
 
 builder.Services.AddControllersWithViews();
 
@@ -91,10 +119,8 @@ app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
 app.MapStaticAssets();
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}/{id?}")
     .WithStaticAssets();
-
 app.Run();

@@ -1,0 +1,122 @@
+﻿@model BhuttaBoutiqueERP.Models.Production.ViewModels.ProductionReportViewModel
+
+@{
+    ViewData["Title"] = "Production Reports - Details";
+}
+
+<!-- Sticky Header Strip -->
+<div class="sticky-header-strip">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+                <i class="fas fa-chart-bar text-primary"></i> Production Reports — Details
+            </h3>
+            <p class="text-secondary small mb-0">
+                <i class="fas fa-calendar-alt me-1"></i>
+                @(Model.ReportPeriod ?? "All Time")
+            </p>
+        </div>
+        <a href="@Url.Action("Index")" class="btn btn-outline-secondary px-4 rounded-pill shadow-sm">
+            <i class="fas fa-arrow-left me-1"></i> Back to Summary
+        </a>
+    </div>
+</div>
+
+<!-- Date Range Filter -->
+<div class="card p-4 shadow-sm mb-4">
+    <form asp-action="ByDateRange" method="get" class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label fw-semibold small">Start Date</label>
+            <input type="date" name="startDate" class="form-control" value="@DateTime.Now.AddDays(-30).ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-semibold small">End Date</label>
+            <input type="date" name="endDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-filter me-1"></i> Apply Filter
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Widgets Row -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card p-3 shadow-sm h-100 border-start border-primary border-4">
+            <span class="text-secondary fw-semibold small text-uppercase">Total Orders</span>
+            <div class="fs-3 fw-bold text-dark mt-2 font-monospace">@Model.TotalOrdersInProduction</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card p-3 shadow-sm h-100 border-start border-warning border-4">
+            <span class="text-secondary fw-semibold small text-uppercase">Pending</span>
+            <div class="fs-3 fw-bold text-dark mt-2 font-monospace">@Model.PendingOrders</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card p-3 shadow-sm h-100 border-start border-success border-4">
+            <span class="text-secondary fw-semibold small text-uppercase">Completed</span>
+            <div class="fs-3 fw-bold text-dark mt-2 font-monospace">@Model.CompletedOrders</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card p-3 shadow-sm h-100 border-start border-info border-4">
+            <span class="text-secondary fw-semibold small text-uppercase">Active Stages</span>
+            <div class="fs-3 fw-bold text-dark mt-2 font-monospace">
+                @(Model.CuttingCount + Model.StitchingCount + Model.EmbroideryCount + Model.FinishingCount + Model.QCCount)
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stage-wise Details Table -->
+<div class="card p-4 shadow-sm">
+    <h6 class="fw-semibold text-dark mb-3 d-flex align-items-center gap-2">
+        <i class="fas fa-tasks text-primary"></i> Stage-wise Breakdown
+    </h6>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="bg-light text-secondary text-uppercase fs-7">
+                <tr>
+                    <th>Stage</th>
+                    <th>Count</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge bg-info rounded-pill px-2">Cutting</span></td>
+                    <td class="fw-semibold">@Model.CuttingCount</td>
+                    <td><span class="badge @(Model.CuttingCount > 0 ? "bg-warning text-dark" : "bg-secondary") rounded-pill px-2">@(Model.CuttingCount > 0 ? "Active" : "Inactive")</span></td>
+                </tr>
+                <tr>
+                    <td><span class="badge bg-warning text-dark rounded-pill px-2">Stitching</span></td>
+                    <td class="fw-semibold">@Model.StitchingCount</td>
+                    <td><span class="badge @(Model.StitchingCount > 0 ? "bg-warning text-dark" : "bg-secondary") rounded-pill px-2">@(Model.StitchingCount > 0 ? "Active" : "Inactive")</span></td>
+                </tr>
+                <tr>
+                    <td><span class="badge bg-primary rounded-pill px-2">Embroidery</span></td>
+                    <td class="fw-semibold">@Model.EmbroideryCount</td>
+                    <td><span class="badge @(Model.EmbroideryCount > 0 ? "bg-warning text-dark" : "bg-secondary") rounded-pill px-2">@(Model.EmbroideryCount > 0 ? "Active" : "Inactive")</span></td>
+                </tr>
+                <tr>
+                    <td><span class="badge bg-secondary rounded-pill px-2">Finishing</span></td>
+                    <td class="fw-semibold">@Model.FinishingCount</td>
+                    <td><span class="badge @(Model.FinishingCount > 0 ? "bg-warning text-dark" : "bg-secondary") rounded-pill px-2">@(Model.FinishingCount > 0 ? "Active" : "Inactive")</span></td>
+                </tr>
+                <tr>
+                    <td><span class="badge bg-danger rounded-pill px-2">Quality Control</span></td>
+                    <td class="fw-semibold">@Model.QCCount</td>
+                    <td><span class="badge @(Model.QCCount > 0 ? "bg-warning text-dark" : "bg-secondary") rounded-pill px-2">@(Model.QCCount > 0 ? "Active" : "Inactive")</span></td>
+                </tr>
+                <tr>
+                    <td><span class="badge bg-success rounded-pill px-2">Completed</span></td>
+                    <td class="fw-semibold">@Model.CompletedOrders</td>
+                    <td><span class="badge bg-success rounded-pill px-2">✅ Done</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

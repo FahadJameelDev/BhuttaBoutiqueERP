@@ -1,0 +1,155 @@
+﻿@model BhuttaBoutiqueERP.Models.Services.ViewModels.ServiceReportViewModel
+
+@{
+    ViewData["Title"] = "Service Reports";
+}
+
+<!-- Sticky Header Strip -->
+<div class="sticky-header-strip">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+                <i class="fas fa-chart-pie text-primary"></i> Service Reports
+            </h3>
+            <p class="text-secondary small mb-0">Comprehensive service analytics, revenue insights, and order performance.</p>
+        </div>
+        <a href="/Services/Catalog" class="btn btn-outline-secondary px-4 rounded-pill shadow-sm">
+            <i class="fas fa-arrow-left me-1"></i> Back to Services
+        </a>
+    </div>
+</div>
+
+<!-- Widgets Row -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card p-3 shadow-sm h-100 border-start border-primary border-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="text-secondary fw-semibold small text-uppercase">Total Orders</span>
+                <i class="fas fa-shopping-bag fa-2x text-primary opacity-50"></i>
+            </div>
+            <div class="fs-3 fw-bold text-dark mt-2 font-monospace">@Model.TotalOrders</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card p-3 shadow-sm h-100 border-start border-warning border-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="text-secondary fw-semibold small text-uppercase">Pending Orders</span>
+                <i class="fas fa-clock fa-2x text-warning opacity-50"></i>
+            </div>
+            <div class="fs-3 fw-bold text-dark mt-2 font-monospace">@Model.PendingOrders</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card p-3 shadow-sm h-100 border-start border-success border-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="text-secondary fw-semibold small text-uppercase">Total Revenue</span>
+                <i class="fas fa-wallet fa-2x text-success opacity-50"></i>
+            </div>
+            <div class="fs-3 fw-bold text-dark mt-2 font-monospace">@Model.TotalRevenue.ToString("N0") PKR</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card p-3 shadow-sm h-100 border-start border-info border-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="text-secondary fw-semibold small text-uppercase">Monthly Revenue</span>
+                <i class="fas fa-calendar-alt fa-2x text-info opacity-50"></i>
+            </div>
+            <div class="fs-3 fw-bold text-dark mt-2 font-monospace">@Model.MonthlyRevenue.ToString("N0") PKR</div>
+        </div>
+    </div>
+</div>
+
+<!-- Top Services + Recent Orders -->
+<div class="row g-3">
+    <!-- Top Services -->
+    <div class="col-12 col-lg-5">
+        <div class="card p-4 shadow-sm h-100">
+            <h6 class="fw-semibold text-dark mb-3 d-flex align-items-center gap-2">
+                <i class="fas fa-trophy text-warning"></i> Top Performing Services
+            </h6>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Orders</th>
+                            <th>Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.TopServices.Any())
+                        {
+                            foreach (var item in Model.TopServices)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@item.ServiceName</td>
+                                    <td>@item.OrderCount</td>
+                                    <td class="fw-semibold text-success">@item.TotalRevenue.ToString("N0") PKR</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-3">No data available</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="col-12 col-lg-7">
+        <div class="card p-4 shadow-sm h-100">
+            <h6 class="fw-semibold text-dark mb-3 d-flex align-items-center gap-2">
+                <i class="fas fa-list text-primary"></i> Recent Orders
+            </h6>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Customer</th>
+                            <th>Service</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Delivery</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.RecentOrders.Any())
+                        {
+                            foreach (var item in Model.RecentOrders)
+                            {
+                                var badgeClass = item.Status?.ToLower() switch
+                                {
+                                    "pending" => "bg-warning text-dark",
+                                    "processing" => "bg-info text-dark",
+                                    "completed" => "bg-success text-white",
+                                    "cancelled" => "bg-danger text-white",
+                                    _ => "bg-secondary text-white"
+                                };
+                                <tr>
+                                    <td class="fw-semibold font-monospace">@item.OrderNumber</td>
+                                    <td>@item.CustomerName</td>
+                                    <td>@item.ServiceName</td>
+                                    <td class="fw-semibold">@item.Total.ToString("N0") PKR</td>
+                                    <td><span class="badge @badgeClass rounded-pill px-2">@item.Status</span></td>
+                                    <td>@item.DeliveryDate.ToString("dd MMM")</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-3">No recent orders found</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

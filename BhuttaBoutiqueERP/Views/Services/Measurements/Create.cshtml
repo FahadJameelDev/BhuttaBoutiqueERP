@@ -1,0 +1,136 @@
+﻿@model BhuttaBoutiqueERP.Models.Services.ViewModels.MeasurementViewModel
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header bg-light">
+            <h5 class="modal-title text-dark fw-bold" style="font-size: 16px;">
+                <i class="fas fa-plus-circle me-2 text-primary"></i>New Measurement
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <form asp-action="Create" method="post" class="ajax-form">
+            <div class="modal-body">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="CustomerId" class="form-label"></label>
+                        <select asp-for="CustomerId" class="form-select" asp-items="@(new SelectList(ViewBag.Customers, "Id", "Name"))">
+                            <option value="">-- Select Customer --</option>
+                        </select>
+                        <span asp-validation-for="CustomerId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="OrderId" class="form-label"></label>
+                        <select asp-for="OrderId" class="form-select" asp-items="@(new SelectList(ViewBag.Orders, "Id", "OrderNumber"))">
+                            <option value="">-- Select Order --</option>
+                        </select>
+                        <span asp-validation-for="OrderId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <hr />
+                        <h6 class="fw-bold text-secondary">Male Measurements</h6>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Chest" class="form-label"></label>
+                        <input asp-for="Chest" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="Chest" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Waist" class="form-label"></label>
+                        <input asp-for="Waist" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="Waist" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Hips" class="form-label"></label>
+                        <input asp-for="Hips" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="Hips" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Shoulder" class="form-label"></label>
+                        <input asp-for="Shoulder" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="Shoulder" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Armhole" class="form-label"></label>
+                        <input asp-for="Armhole" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="Armhole" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Neck" class="form-label"></label>
+                        <input asp-for="Neck" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="Neck" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="KurtaLength" class="form-label"></label>
+                        <input asp-for="KurtaLength" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="KurtaLength" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="ShalwarLength" class="form-label"></label>
+                        <input asp-for="ShalwarLength" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="ShalwarLength" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Paicha" class="form-label"></label>
+                        <input asp-for="Paicha" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="Paicha" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="SleeveLength" class="form-label"></label>
+                        <input asp-for="SleeveLength" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="SleeveLength" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <hr />
+                        <h6 class="fw-bold text-secondary">Female Measurements</h6>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Bust" class="form-label"></label>
+                        <input asp-for="Bust" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="Bust" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="KameezLength" class="form-label"></label>
+                        <input asp-for="KameezLength" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="KameezLength" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="DupattaLength" class="form-label"></label>
+                        <input asp-for="DupattaLength" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="DupattaLength" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Damman" class="form-label"></label>
+                        <input asp-for="Damman" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="Damman" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Date" class="form-label"></label>
+                        <input asp-for="Date" class="form-control" type="date" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="Notes" class="form-label"></label>
+                        <textarea asp-for="Notes" class="form-control" rows="2" placeholder="Additional notes"></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary px-4" style="font-weight: 600;">
+                    <i class="fas fa-save me-1"></i> Save Measurements
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
