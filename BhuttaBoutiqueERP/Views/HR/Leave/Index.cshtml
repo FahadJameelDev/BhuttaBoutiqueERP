@@ -1,0 +1,79 @@
+﻿@model IEnumerable<BhuttaBoutiqueERP.Models.HR.Entities.Leave>
+
+@{
+    ViewData["Title"] = "Leave Management";
+}
+
+<!-- 1️⃣ HEADER STRIP -->
+<div class="sticky-header-strip d-flex justify-content-between align-items-center px-4 py-3 bg-white border-bottom shadow-sm">
+    <div>
+        <h4 class="mb-1 text-dark fw-bold">Leave Requests</h4>
+        <p class="text-muted mb-0 small">Manage employee leave applications, approvals, and tracking.</p>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary open-modal-btn" data-url="@Url.Action("Create", "Leave")">
+            <i class="fas fa-plus me-1"></i> Apply Leave
+        </button>
+    </div>
+</div>
+
+<div class="container-fluid px-4 mt-4">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <!-- 2️⃣ TABLE WRAPPER -->
+            <div class="table-responsive sticky-table-wrap">
+                <table class="table table-hover align-middle mb-0">
+                    <!-- 3️⃣ THEAD -->
+                    <thead class="bg-light text-secondary text-uppercase fs-7">
+                        <tr>
+                            <th class="ps-4">Employee</th>
+                            <th>Leave Type</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-semibold text-dark">@item.Employee?.FullName</td>
+                                    <td>@item.Type</td>
+                                    <td>@item.StartDate.ToString("yyyy-MM-dd")</td>
+                                    <td>@item.EndDate.ToString("yyyy-MM-dd")</td>
+                                    <td>
+                                        <span class="badge @(item.Status == "Approved" ? "bg-success" : item.Status == "Rejected" ? "bg-danger" : "bg-warning text-dark")">
+                                            @item.Status
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <!-- 4️⃣ BUTTONS (Edit, Delete) -->
+                                        <button type="button" class="btn btn-sm btn-outline-primary open-modal-btn me-1" data-url="@Url.Action("Edit", "Leave", new { id = item.Id })">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger open-modal-btn" data-url="@Url.Action("Delete", "Leave", new { id = item.Id })">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <!-- 5️⃣ EMPTY STATE -->
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="fas fa-inbox fa-3x mb-3 text-secondary"></i>
+                                    <p class="mb-0 fw-semibold">No leave records found.</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

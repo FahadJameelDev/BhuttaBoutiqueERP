@@ -5,6 +5,7 @@ using BhuttaBoutiqueERP.Services.Auth;
 using BhuttaBoutiqueERP.Services.Inventory; // 📌 Yeh namespace lazmi add karein taake services recognize hon
 using BhuttaBoutiqueERP.Services.Production;  // ✅ PRODUCTION NAMESPACE
 using BhuttaBoutiqueERP.Services.Services; // 📌 Services Module Namespace
+using BhuttaBoutiqueERP.Services.HR; // 📌 HR Module Namespace
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
@@ -56,8 +57,25 @@ builder.Services.AddScoped<IFabricAllocationService, FabricAllocationService>();
 builder.Services.AddScoped<IFabricIssueService, FabricIssueService>();
 builder.Services.AddScoped<IOrderLifecycleService, OrderLifecycleService>();
 builder.Services.AddScoped<IProductionReportService, ProductionReportService>();
+// ==========================================
+// 📌 HR & PAYROLL SERVICES ✅ NEW
+// ==========================================
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+builder.Services.AddScoped<ILeaveService, LeaveService>();
+builder.Services.AddScoped<IPayrollService, PayrollService>();
+builder.Services.AddScoped<IAdvanceService, AdvanceService>();
+builder.Services.AddScoped<ICommissionRateService, CommissionRateService>();
 
-builder.Services.AddControllersWithViews();
+
+// 👇 IS LINE KO YAHAN REPLACE KAR DO (HR services ke neechay aur builder.Build() se opper)
+builder.Services.AddControllersWithViews(options =>
+{
+    // 📌 Global Exception Filter Registration (Crash-proof ERP)
+    options.Filters.Add<BhuttaBoutiqueERP.Filters.GlobalExceptionFilter>();
+});
+
+
 
 var app = builder.Build();
 

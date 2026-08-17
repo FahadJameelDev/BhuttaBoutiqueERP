@@ -32,11 +32,11 @@ const moduleFeatures = {
         { name: "Production Reports", url: "/Production/ProductionReports", icon: "fa-chart-line" }
     ],
     "HR": [
-        { name: "Employee Master", url: "/HR/EmployeeMaster", icon: "fa-id-badge" },
-        { name: "Compensation Matrix", url: "/HR/Compensation", icon: "fa-money-bill-wave" },
+        { name: "Employee Master", url: "/HR/Employees", icon: "fa-id-badge" },
+        { name: "Compensation Matrix", url: "/HR/CommissionRates", icon: "fa-money-bill-wave" },
         { name: "Attendance", url: "/HR/Attendance", icon: "fa-calendar-check" },
         { name: "Leave Management", url: "/HR/Leave", icon: "fa-calendar-minus" },
-        { name: "Advance / Loan", url: "/HR/AdvanceLoan", icon: "fa-hand-holding-dollar" },
+        { name: "Advance / Loan", url: "/HR/Advance", icon: "fa-hand-holding-dollar" },
         { name: "Payroll Processing", url: "/HR/Payroll", icon: "fa-file-invoice" },
         { name: "HR Reports", url: "/HR/Reports", icon: "fa-chart-area" }
     ],

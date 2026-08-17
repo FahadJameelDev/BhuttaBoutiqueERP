@@ -1,4 +1,5 @@
 ﻿using BhuttaBoutiqueERP.Models.Auth.Entities;
+using BhuttaBoutiqueERP.Models.HR.Entities;
 using BhuttaBoutiqueERP.Models.Inventory.Entities;
 using BhuttaBoutiqueERP.Models.Production.Entities;
 using BhuttaBoutiqueERP.Models.Services.Entities;
@@ -38,6 +39,13 @@ namespace BhuttaBoutiqueERP.Data
         public DbSet<FabricIssue> FabricIssues { get; set; }
         public DbSet<OrderLifecycle> OrderLifecycles { get; set; }
         public DbSet<ProductionLog> ProductionLogs { get; set; }
+        // ── HR & PAYROLL MODULE (6 Tables) ──
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<Leave> Leaves { get; set; }
+        public DbSet<Payroll> Payrolls { get; set; }
+        public DbSet<Advance> Advances { get; set; }
+        public DbSet<CommissionRate> CommissionRates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -209,6 +217,45 @@ namespace BhuttaBoutiqueERP.Data
                 .HasOne(pl => pl.Order)
                 .WithMany()
                 .HasForeignKey(pl => pl.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ── HR & PAYROLL CONFIGURATION ──
+            modelBuilder.Entity<Employee>()
+                .HasIndex(e => e.Phone)
+                .IsUnique();
+
+            modelBuilder.Entity<Employee>()
+                .HasIndex(e => e.CNIC)
+                .IsUnique();
+
+            modelBuilder.Entity<Attendance>()
+                .HasOne(a => a.Employee)
+                .WithMany(e => e.Attendances)
+                .HasForeignKey(a => a.EmployeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Leave>()
+                .HasOne(l => l.Employee)
+                .WithMany(e => e.Leaves)
+                .HasForeignKey(l => l.EmployeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Payroll>()
+                .HasOne(p => p.Employee)
+                .WithMany(e => e.Payrolls)
+                .HasForeignKey(p => p.EmployeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Advance>()
+                .HasOne(adv => adv.Employee)
+                .WithMany(e => e.Advances)
+                .HasForeignKey(adv => adv.EmployeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<CommissionRate>()
+                .HasOne<ServiceCatalog>()
+                .WithMany()
+                .HasForeignKey(cr => cr.ServiceId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

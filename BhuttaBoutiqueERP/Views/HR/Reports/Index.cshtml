@@ -1,0 +1,87 @@
+﻿@{
+    ViewData["Title"] = "HR Reports Dashboard";
+}
+
+<!-- 1️⃣ HEADER STRIP -->
+<div class="sticky-header-strip d-flex justify-content-between align-items-center px-4 py-3 bg-white border-bottom shadow-sm">
+    <div>
+        <h4 class="mb-1 text-dark fw-bold">HR Reports & Analytics</h4>
+        <p class="text-muted mb-0 small">Generate, view, and analyze comprehensive HR, payroll, and attendance reports.</p>
+    </div>
+</div>
+
+<div class="container-fluid px-4 mt-4">
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-primary text-white p-3">
+                <h6 class="text-uppercase small fw-semibold">Total Employees</h6>
+                <h3 class="fw-bold mb-0">@ViewBag.TotalEmployees</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-success text-white p-3">
+                <h6 class="text-uppercase small fw-semibold">Active Staff</h6>
+                <h3 class="fw-bold mb-0">@ViewBag.ActiveEmployees</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-info text-white p-3">
+                <h6 class="text-uppercase small fw-semibold">Attendance Logs</h6>
+                <h3 class="fw-bold mb-0">@ViewBag.TotalAttendances</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-warning text-dark p-3">
+                <h6 class="text-uppercase small fw-semibold">Leave Requests</h6>
+                <h3 class="fw-bold mb-0">@ViewBag.TotalLeaves</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Selector Cards -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h5 class="fw-bold mb-0 text-dark">Select Report to View</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <a href="@Url.Action("Details", "HRReport", new { reportType = "Attendance" })" class="text-decoration-none">
+                        <div class="p-4 border rounded text-center h-100 bg-light hover-shadow transition">
+                            <i class="fas fa-calendar-check fa-2x text-primary mb-2"></i>
+                            <h6 class="fw-bold text-dark mb-1">Attendance Report</h6>
+                            <p class="text-muted small mb-0">View daily shifts and check-ins.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="@Url.Action("Details", "HRReport", new { reportType = "Payroll" })" class="text-decoration-none">
+                        <div class="p-4 border rounded text-center h-100 bg-light hover-shadow transition">
+                            <i class="fas fa-file-invoice-dollar fa-2x text-success mb-2"></i>
+                            <h6 class="fw-bold text-dark mb-1">Payroll Ledger</h6>
+                            <p class="text-muted small mb-0">View salary sheets and payouts.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="@Url.Action("Details", "HRReport", new { reportType = "Leave" })" class="text-decoration-none">
+                        <div class="p-4 border rounded text-center h-100 bg-light hover-shadow transition">
+                            <i class="fas fa-user-clock fa-2x text-warning mb-2"></i>
+                            <h6 class="fw-bold text-dark mb-1">Leave Report</h6>
+                            <p class="text-muted small mb-0">Track employee leave history.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="@Url.Action("Details", "HRReport", new { reportType = "Advance" })" class="text-decoration-none">
+                        <div class="p-4 border rounded text-center h-100 bg-light hover-shadow transition">
+                            <i class="fas fa-hand-holding-usd fa-2x text-danger mb-2"></i>
+                            <h6 class="fw-bold text-dark mb-1">Advance & Loans</h6>
+                            <p class="text-muted small mb-0">View cash advances and deductions.</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

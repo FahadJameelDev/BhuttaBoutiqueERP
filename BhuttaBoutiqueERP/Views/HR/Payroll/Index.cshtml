@@ -1,0 +1,87 @@
+﻿@model IEnumerable<BhuttaBoutiqueERP.Models.HR.Entities.Payroll>
+
+@{
+    ViewData["Title"] = "Payroll Management";
+}
+
+<!-- 1️⃣ HEADER STRIP -->
+<div class="sticky-header-strip d-flex justify-content-between align-items-center px-4 py-3 bg-white border-bottom shadow-sm">
+    <div>
+        <h4 class="mb-1 text-dark fw-bold">Payroll Records</h4>
+        <p class="text-muted mb-0 small">Manage employee salaries, allowances, deductions, and monthly payouts.</p>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary open-modal-btn" data-url="@Url.Action("Create", "Payroll")">
+            <i class="fas fa-plus me-1"></i> Generate Payroll
+        </button>
+    </div>
+</div>
+
+<div class="container-fluid px-4 mt-4">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <!-- 2️⃣ TABLE WRAPPER -->
+            <div class="table-responsive sticky-table-wrap">
+                <table class="table table-hover align-middle mb-0">
+                    <!-- 3️⃣ THEAD -->
+                    <thead class="bg-light text-secondary text-uppercase fs-7">
+                        <tr>
+                            <th class="ps-4">Employee</th>
+                            <th>Month</th>
+                            <th>Base Salary</th>
+                            <th>Commission</th>
+                            <th>Overtime</th>
+                            <th>Bonus</th>
+                            <th>Deductions</th>
+                            <th>Net Salary</th>
+                            <th>Status</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-semibold text-dark">@item.Employee?.FullName</td>
+                                    <td>@item.Month</td>
+                                    <td>@item.BaseSalary.ToString("N0")</td>
+                                    <td>@item.Commission.ToString("N0")</td>
+                                    <td>@item.Overtime.ToString("N0")</td>
+                                    <td>@item.Bonus.ToString("N0")</td>
+                                    <td class="text-danger">-@item.Deductions.ToString("N0")</td>
+                                    <td class="fw-bold text-success">@item.NetSalary.ToString("N0")</td>
+                                    <td>
+                                        <span class="badge @(item.Status == "Paid" ? "bg-success" : "bg-warning text-dark")">
+                                            @item.Status
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <!-- 4️⃣ BUTTONS (Edit, Delete) -->
+                                        <button type="button" class="btn btn-sm btn-outline-primary open-modal-btn me-1" data-url="@Url.Action("Edit", "Payroll", new { id = item.Id })">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger open-modal-btn" data-url="@Url.Action("Delete", "Payroll", new { id = item.Id })">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <!-- 5️⃣ EMPTY STATE -->
+                            <tr>
+                                <td colspan="10" class="text-center py-5 text-muted">
+                                    <i class="fas fa-inbox fa-3x mb-3 text-secondary"></i>
+                                    <p class="mb-0 fw-semibold">No payroll records found.</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

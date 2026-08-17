@@ -1,0 +1,173 @@
+﻿@model object
+
+@{
+    ViewData["Title"] = ViewBag.ReportTitle ?? "Report Details";
+    string reportType = ViewBag.ReportType as string;
+}
+
+<!-- 1️⃣ HEADER STRIP -->
+<div class="sticky-header-strip d-flex justify-content-between align-items-center px-4 py-3 bg-white border-bottom shadow-sm">
+    <div>
+        <h4 class="mb-1 text-dark fw-bold">@ViewBag.ReportTitle</h4>
+        <p class="text-muted mb-0 small">Detailed system entries and breakdown for @reportType records.</p>
+    </div>
+    <div>
+        <a href="@Url.Action("Index", "HRReport")" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Back to Reports
+        </a>
+        <button type="button" class="btn btn-outline-primary ms-2" onclick="window.print();">
+            <i class="fas fa-print me-1"></i> Print Report
+        </button>
+    </div>
+</div>
+
+<div class="container-fluid px-4 mt-4">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <!-- 2️⃣ TABLE WRAPPER -->
+            <div class="table-responsive sticky-table-wrap">
+                <table class="table table-hover align-middle mb-0">
+                    @if (reportType == "Attendance")
+                    {
+                        <!-- 3️⃣ THEAD -->
+                        <thead class="bg-light text-secondary text-uppercase fs-7">
+                            <tr>
+                                <th class="ps-4">Employee</th>
+                                <th>Date</th>
+                                <th>Check In</th>
+                                <th>Check Out</th>
+                                <th>Status</th>
+                                <th class="text-end pe-4">Late (Mins)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model is IEnumerable<BhuttaBoutiqueERP.Models.HR.Entities.Attendance> attendances && attendances.Any())
+                            {
+                                foreach (var item in attendances)
+                                {
+                                    <tr>
+                                        <td class="ps-4 fw-semibold text-dark">@item.Employee?.FullName</td>
+                                        <td>@item.Date.ToString("yyyy-MM-dd")</td>
+                                        <td>@(item.CheckIn.HasValue? item.CheckIn.Value.ToString(@"hh\:mm") : "-")</td>
+                                        <td>@(item.CheckOut.HasValue? item.CheckOut.Value.ToString(@"hh\:mm") : "-")</td>
+                                        <td><span class="badge bg-success">@item.Status</span></td>
+                                        <td class="text-end pe-4">@item.LateMinutes</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <!-- 5️⃣ EMPTY STATE -->
+                                <tr><td colspan="6" class="text-center py-5 text-muted"><i class="fas fa-inbox fa-3x mb-3 text-secondary"></i><p class="mb-0 fw-semibold">No records found.</p></td></tr>
+                            }
+                        </tbody>
+                    }
+                    else if (reportType == "Payroll")
+                    {
+                        <thead class="bg-light text-secondary text-uppercase fs-7">
+                            <tr>
+                                <th class="ps-4">Employee</th>
+                                <th>Month</th>
+                                <th>Base Salary</th>
+                                <th>Bonus</th>
+                                <th>Deductions</th>
+                                <th class="text-end pe-4">Net Salary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model is IEnumerable<BhuttaBoutiqueERP.Models.HR.Entities.Payroll> payrolls && payrolls.Any())
+                            {
+                                foreach (var item in payrolls)
+                                {
+                                    <tr>
+                                        <td class="ps-4 fw-semibold text-dark">@item.Employee?.FullName</td>
+                                        <td>@item.Month</td>
+                                        <td>@item.BaseSalary.ToString("N0")</td>
+                                        <td>@item.Bonus.ToString("N0")</td>
+                                        <td class="text-danger">-@item.Deductions.ToString("N0")</td>
+                                        <td class="text-end pe-4 fw-bold text-success">@item.NetSalary.ToString("N0")</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="6" class="text-center py-5 text-muted"><i class="fas fa-inbox fa-3x mb-3 text-secondary"></i><p class="mb-0 fw-semibold">No records found.</p></td></tr>
+                            }
+                        </tbody>
+                    }
+                    else if (reportType == "Leave")
+                    {
+                        <thead class="bg-light text-secondary text-uppercase fs-7">
+                            <tr>
+                                <th class="ps-4">Employee</th>
+                                <th>Type</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th class="text-end pe-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model is IEnumerable<BhuttaBoutiqueERP.Models.HR.Entities.Leave> leaves && leaves.Any())
+                            {
+                                foreach (var item in leaves)
+                                {
+                                    <tr>
+                                        <td class="ps-4 fw-semibold text-dark">@item.Employee?.FullName</td>
+                                        <td>@item.Type</td>
+                                        <td>@item.StartDate.ToString("yyyy-MM-dd")</td>
+                                        <td>@item.EndDate.ToString("yyyy-MM-dd")</td>
+                                        <td class="text-end pe-4"><span class="badge bg-primary">@item.Status</span></td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="5" class="text-center py-5 text-muted"><i class="fas fa-inbox fa-3x mb-3 text-secondary"></i><p class="mb-0 fw-semibold">No records found.</p></td></tr>
+                            }
+                        </tbody>
+                    }
+                    else if (reportType == "Advance")
+                    {
+                        <thead class="bg-light text-secondary text-uppercase fs-7">
+                            <tr>
+                                <th class="ps-4">Employee</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th class="text-end pe-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model is IEnumerable<BhuttaBoutiqueERP.Models.HR.Entities.Advance> advances && advances.Any())
+                            {
+                                foreach (var item in advances)
+                                {
+                                    <tr>
+                                        <td class="ps-4 fw-semibold text-dark">@item.Employee?.FullName</td>
+                                        <td>@item.Type</td>
+                                        <td class="fw-bold">@item.Amount.ToString("N0")</td>
+                                        <td>@item.Date.ToString("yyyy-MM-dd")</td>
+                                        <td class="text-end pe-4"><span class="badge bg-warning text-dark">@item.Status</span></td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="5" class="text-center py-5 text-muted"><i class="fas fa-inbox fa-3x mb-3 text-secondary"></i><p class="mb-0 fw-semibold">No records found.</p></td></tr>
+                            }
+                        </tbody>
+                    }
+                    else
+                    {
+                        <thead class="bg-light text-secondary text-uppercase fs-7">
+                            <tr><th class="ps-4">Record Info</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="ps-4 text-center py-5 text-muted">No report data available.</td></tr>
+                        </tbody>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
