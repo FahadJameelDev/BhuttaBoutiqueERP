@@ -1,0 +1,96 @@
+﻿@model BhuttaBoutiqueERP.ViewModels.Reports.FinancialReportVM
+
+@{
+    ViewData["Title"] = "Financial Summary Report";
+}
+
+<div class="container-fluid px-4">
+    <!-- 1️⃣ HEADER STRIP -->
+    <div class="sticky-header-strip d-flex justify-content-between align-items-center py-3 mb-4 border-bottom bg-white">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">Financial Reports</h1>
+            <p class="text-muted small mb-0">Overview of revenue, expenses, net profit, and recent ledger transactions.</p>
+        </div>
+        <div>
+            <button class="btn btn-primary" onclick="window.print();">
+                <i class="fas fa-print me-1"></i> Print / Export
+            </button>
+        </div>
+    </div>
+
+    <!-- Metrics Cards Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-3 bg-light">
+                <h6 class="text-muted">Total Revenue</h6>
+                <h3 class="fw-bold text-success">PKR @Model.TotalRevenue.ToString("N0")</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-3 bg-light">
+                <h6 class="text-muted">Total Expenses</h6>
+                <h3 class="fw-bold text-danger">PKR @Model.TotalExpenses.ToString("N0")</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-3 bg-light">
+                <h6 class="text-muted">Net Profit / Balance</h6>
+                <h3 class="fw-bold @(Model.NetProfit >= 0 ? "text-primary" : "text-danger")">
+                    PKR @Model.NetProfit.ToString("N0")
+                </h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2️⃣ TABLE WRAPPER -->
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive sticky-table-wrap" style="max-height: 600px; overflow-y: auto;">
+            <table class="table table-hover align-middle mb-0">
+                <!-- 3️⃣ THEAD -->
+                <thead class="bg-light text-secondary text-uppercase fs-7 sticky-top" style="z-index: 1;">
+                    <tr>
+                        <th class="ps-4">#</th>
+                        <th>Ref Number</th>
+                        <th>Category / Method</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th class="pe-4">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Transactions != null && Model.Transactions.Any())
+                    {
+                        int index = 1;
+                        foreach (var item in Model.Transactions)
+                        {
+                            <tr>
+                                <td class="ps-4">@(index++)</td>
+                                <td><span class="fw-bold">@item.TransactionRef</span></td>
+                                <td>@item.Category</td>
+                                <td><span class="fw-semibold text-success">PKR @item.Amount.ToString("N0")</span></td>
+                                <td>@item.Date.ToString("dd MMM yyyy, hh:mm tt")</td>
+                                <td class="pe-4">
+                                    <span class="badge bg-success">
+                                        @item.Status
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <!-- 5️⃣ EMPTY STATE -->
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="text-muted">
+                                    <i class="fas fa-inbox fa-3x mb-3"></i>
+                                    <p class="mb-0">No financial transactions recorded yet.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

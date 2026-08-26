@@ -1,4 +1,5 @@
-﻿using BhuttaBoutiqueERP.Models.Auth.Entities;
+﻿using BhuttaBoutiqueERP.Models;
+using BhuttaBoutiqueERP.Models.Auth.Entities;
 using BhuttaBoutiqueERP.Models.HR.Entities;
 using BhuttaBoutiqueERP.Models.Inventory.Entities;
 using BhuttaBoutiqueERP.Models.Production.Entities;
@@ -46,6 +47,8 @@ namespace BhuttaBoutiqueERP.Data
         public DbSet<Payroll> Payrolls { get; set; }
         public DbSet<Advance> Advances { get; set; }
         public DbSet<CommissionRate> CommissionRates { get; set; }
+        // Yeh line add karein:
+        public DbSet<ActivityLog> ActivityLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,153 +1,19 @@
-﻿@model BhuttaBoutiqueERP.Models.ViewModels.DashboardViewModel
-
-@{
+﻿@{
     ViewData["Title"] = "Dashboard";
 }
 
-<!-- Dashboard Main Content Area -->
-<div class="container-fluid py-3">
-    
-    <!-- Row 1: KPI Cards -->
-    <div class="row g-4 mb-4">
-        <!-- Total Orders Card -->
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-3 h-100" style="border-left: 4px solid #3b5998 !important;">
-                <div class="card-body d-flex justify-content-between align-items-center p-4">
-                    <div>
-                        <p class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Total Orders</p>
-                        <h3 class="fw-bold mb-0 text-dark">@Model.TotalOrders</h3>
-                    </div>
-                    <div class="icon-box" style="color: #3b5998;">
-                        <i class="fas fa-shopping-bag fa-2x opacity-75"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pending Orders Card -->
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-3 h-100" style="border-left: 4px solid #f0ad4e !important;">
-                <div class="card-body d-flex justify-content-between align-items-center p-4">
-                    <div>
-                        <p class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Pending Orders</p>
-                        <h3 class="fw-bold mb-0 text-dark">@Model.PendingOrders</h3>
-                    </div>
-                    <div class="icon-box" style="color: #f0ad4e;">
-                        <i class="fas fa-clock fa-2x opacity-75"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Today Revenue Card -->
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-3 h-100" style="border-left: 4px solid #5cb85c !important;">
-                <div class="card-body d-flex justify-content-between align-items-center p-4">
-                    <div>
-                        <p class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Today Revenue</p>
-                        <h3 class="fw-bold mb-0 text-dark">@Model.TodayRevenue.ToString("N0") <span class="fs-6 text-muted">PKR</span></h3>
-                    </div>
-                    <div class="icon-box" style="color: #5cb85c;">
-                        <i class="fas fa-wallet fa-2x opacity-75"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Employees Card -->
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-3 h-100" style="border-left: 4px solid #5bc0de !important;">
-                <div class="card-body d-flex justify-content-between align-items-center p-4">
-                    <div>
-                        <p class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Employees</p>
-                        <h3 class="fw-bold mb-0 text-dark">@Model.TotalEmployees</h3>
-                    </div>
-                    <div class="icon-box" style="color: #5bc0de;">
-                        <i class="fas fa-users fa-2x opacity-75"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Row 2: Charts and Tables -->
-    <div class="row g-4">
-        <!-- Weekly Sales Chart Section -->
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm rounded-3 h-100">
-                <div class="card-body p-4">
-                    <h6 class="text-muted fw-bold mb-4"><i class="fas fa-chart-line me-2"></i> Weekly Sales</h6>
-                    
-                    <div class="d-flex align-items-end gap-2 px-1" style="height: 180px;">
-                        @if (Model.WeeklySales != null && Model.WeeklySales.Any())
-                        {
-                            var maxTotal = Model.WeeklySales.Max(x => x.Total);
-                            foreach (var item in Model.WeeklySales)
-                            {
-                                var height = maxTotal > 0 ? (item.Total / maxTotal) * 100 : 0;
-                                <div class="flex-fill d-flex flex-column align-items-center gap-1 h-100 justify-content-end">
-                                    <span class="fw-bold text-success font-monospace" style="font-size: 9px;">@item.Total.ToString("N0")</span>
-                                    <div class="w-100 rounded-top bg-success bg-opacity-75" style="height: @Math.Max(height, 8)%; max-width: 32px; transition: height 0.3s;"></div>
-                                    <span class="text-secondary mt-1 fw-medium" style="font-size: 10.5px;">@item.Day</span>
-                                </div>
-                            }
-                        }
-                        else
-                        {
-                            <div class="d-flex flex-column justify-content-center align-items-center w-100 h-100 text-muted">
-                                <i class="far fa-calendar-alt mb-2 fa-2x"></i>
-                                <small>No sales data available</small>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Orders Table Section -->
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm rounded-3 h-100">
-                <div class="card-body p-4">
-                    <h6 class="text-muted fw-bold mb-4"><i class="fas fa-list me-2"></i> Recent Orders</h6>
-                    
-                    <div class="table-responsive">
-                        <table class="table table-borderless text-center align-middle" style="font-size: 0.85rem;">
-                            <thead class="text-muted border-bottom">
-                                <tr>
-                                    <th class="fw-semibold pb-3">ORDER #</th>
-                                    <th class="fw-semibold pb-3">CUSTOMER</th>
-                                    <th class="fw-semibold pb-3">SERVICE</th>
-                                    <th class="fw-semibold pb-3">TOTAL</th>
-                                    <th class="fw-semibold pb-3">STATUS</th>
-                                    <th class="fw-semibold pb-3">DELIVERY</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model.RecentOrders != null && Model.RecentOrders.Any())
-                                {
-                                    foreach (var order in Model.RecentOrders)
-                                    {
-                                        <tr>
-                                            <td class="fw-semibold text-dark">@order.OrderNumber</td>
-                                            <td>@order.CustomerName</td>
-                                            <td>@order.Service</td>
-                                            <td>@order.Total.ToString("N0")</td>
-                                            <td><span class="badge bg-secondary">@order.Status</span></td>
-                                            <td>@order.DeliveryDate.ToString("dd MMM yyyy")</td>
-                                        </tr>
-                                    }
-                                }
-                                else
-                                {
-                                    <tr>
-                                        <td colspan="6" class="py-5 text-muted">
-                                            <i class="fas fa-inbox me-2"></i> No recent orders found
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+<!-- Clean Home Content (Dashboard removed from here) -->
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-3 p-5 text-center">
+                <div class="card-body">
+                    <h1 class="fw-bold text-dark mb-3">
+                        <i class="fas fa-home text-success me-2"></i> Welcome to Bhutta Boutique ERP
+                    </h1>
+                    <p class="text-muted fs-6 mb-4">
+                        Select an option from the sidebar menu to navigate through modules and reports.
+                    </p>
                 </div>
             </div>
         </div>

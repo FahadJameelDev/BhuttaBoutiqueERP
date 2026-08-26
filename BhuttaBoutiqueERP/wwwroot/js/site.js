@@ -47,7 +47,7 @@ const moduleFeatures = {
         { name: "Production Reports", url: "/Reports/Production", icon: "fa-industry" },
         { name: "HR Reports", url: "/Reports/HR", icon: "fa-users-line" },
         { name: "Financial Reports", url: "/Reports/Financial", icon: "fa-file-circle-check" },
-        { name: "Advanced Features", url: "/Reports/Advanced", icon: "fa-wand-magic-sparkles" }
+        { name: "Advanced Features", url: "/Reports/AdvancedFeatures", icon: "fa-wand-magic-sparkles" }
     ]
 };
 

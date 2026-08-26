@@ -1,11 +1,11 @@
 using BhuttaBoutiqueERP.Data;
 using BhuttaBoutiqueERP.Models.Auth.Entities;
 using BhuttaBoutiqueERP.Services.Auth;
-
-using BhuttaBoutiqueERP.Services.Inventory; // 📌 Yeh namespace lazmi add karein taake services recognize hon
-using BhuttaBoutiqueERP.Services.Production;  // ✅ PRODUCTION NAMESPACE
-using BhuttaBoutiqueERP.Services.Services; // 📌 Services Module Namespace
-using BhuttaBoutiqueERP.Services.HR; // 📌 HR Module Namespace
+using BhuttaBoutiqueERP.Services.HR;
+using BhuttaBoutiqueERP.Services.Inventory;
+using BhuttaBoutiqueERP.Services.Production;
+using BhuttaBoutiqueERP.Services.Reports;
+using BhuttaBoutiqueERP.Services.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
@@ -23,11 +23,12 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
 // ── AUTH SERVICES ──
 builder.Services.AddScoped<IUserService, UserService>();
 
 // ==========================================
-// 📌 3️⃣ INVENTORY SERVICES REGISTRATION (Yahan add ki hain)
+// 📌 3️⃣ INVENTORY SERVICES REGISTRATION
 // ==========================================
 builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IStockInService, StockInService>();
@@ -47,8 +48,9 @@ builder.Services.AddScoped<IMeasurementService, MeasurementService>();
 builder.Services.AddScoped<IDesignLibraryService, DesignLibraryService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IServiceReportService, ServiceReportService>();
+
 // ==========================================
-// 📌 PRODUCTION SERVICES ✅ NEW
+// 📌 PRODUCTION SERVICES
 // ==========================================
 builder.Services.AddScoped<IFabricDemandService, FabricDemandService>();
 builder.Services.AddScoped<IDemandListService, DemandListService>();
@@ -56,9 +58,12 @@ builder.Services.AddScoped<IStockCheckService, StockCheckService>();
 builder.Services.AddScoped<IFabricAllocationService, FabricAllocationService>();
 builder.Services.AddScoped<IFabricIssueService, FabricIssueService>();
 builder.Services.AddScoped<IOrderLifecycleService, OrderLifecycleService>();
-builder.Services.AddScoped<IProductionReportService, ProductionReportService>();
+
+// Fully qualified namespace for Production Report to prevent ambiguity
+builder.Services.AddScoped<BhuttaBoutiqueERP.Services.Production.IProductionReportService, BhuttaBoutiqueERP.Services.Production.ProductionReportService>();
+
 // ==========================================
-// 📌 HR & PAYROLL SERVICES ✅ NEW
+// 📌 HR & PAYROLL SERVICES
 // ==========================================
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
@@ -67,19 +72,26 @@ builder.Services.AddScoped<IPayrollService, PayrollService>();
 builder.Services.AddScoped<IAdvanceService, AdvanceService>();
 builder.Services.AddScoped<ICommissionRateService, CommissionRateService>();
 
+// ==========================================
+// 📌 REPORTS MODULE SERVICES REGISTRATION
+// ==========================================
+builder.Services.AddScoped<IDashboardReportService, DashboardReportService>();
+builder.Services.AddScoped<ISalesReportService, SalesReportService>();
+builder.Services.AddScoped<IInventoryReportService, InventoryReportService>();
+builder.Services.AddScoped<BhuttaBoutiqueERP.Services.Reports.IProductionReportService, BhuttaBoutiqueERP.Services.Reports.ProductionReportService>();
+builder.Services.AddScoped<IHRReportService, HRReportService>();
+builder.Services.AddScoped<IFinancialReportService, FinancialReportService>();
+builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
 
-// 👇 IS LINE KO YAHAN REPLACE KAR DO (HR services ke neechay aur builder.Build() se opper)
+// Controllers and Global Exception Filter Registration
 builder.Services.AddControllersWithViews(options =>
 {
-    // 📌 Global Exception Filter Registration (Crash-proof ERP)
     options.Filters.Add<BhuttaBoutiqueERP.Filters.GlobalExceptionFilter>();
 });
 
-
-
 var app = builder.Build();
 
-// 🚀 4️⃣ SMART DATABASE SEEDER (Creates Role & Admin Safely)
+// 🚀 4️⃣ SMART DATABASE SEEDER (5 Locked Roles & Default Users with Specific Emails)
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -87,46 +99,69 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<AppDbContext>();
 
-        // Step A: Ensure 'Admin' role exists first
-        var adminRole = context.Roles.FirstOrDefault(r => r.Name == "Admin");
-        if (adminRole == null)
-        {
-            adminRole = new Role { Name = "Admin" };
-            context.Roles.Add(adminRole);
-            context.SaveChanges(); // Save to get the generated Role Id
-        }
+        // 1. Array of the 5 Locked Roles
+        string[] lockedRoles = {
+            "Admin",
+            "InventoryManager",
+            "ProductionSupervisor",
+            "BookingClerk",
+            "HRManager"
+        };
 
-        // Step B: Check if Admin user exists
-        string adminEmail = "admin@bhuttaboutique.com";
-        var existingUser = context.Users.FirstOrDefault(u => u.Email == adminEmail);
-
-        if (existingUser == null)
+        foreach (var roleName in lockedRoles)
         {
-            string password = "Admin@123";
-            string hashedPassword;
-            using (var sha256 = SHA256.Create())
+            if (!context.Roles.Any(r => r.Name == roleName))
             {
-                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                hashedPassword = Convert.ToBase64String(hashedBytes);
+                context.Roles.Add(new Role { Name = roleName });
             }
-
-            var adminUser = new User
-            {
-                Name = "Super Admin",
-                Email = adminEmail,
-                PasswordHash = hashedPassword,
-                IsActive = true,
-                RoleId = adminRole.Id // Dynamically assigned correct Role ID
-            };
-
-            context.Users.Add(adminUser);
-            context.SaveChanges();
         }
+        context.SaveChanges();
+
+        // 2. Default Password Hash (Password for all default users: Admin@123)
+        string defaultPassword = "Admin@123";
+        string hashedPassword;
+        using (var sha256 = SHA256.Create())
+        {
+            var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(defaultPassword));
+            hashedPassword = Convert.ToBase64String(hashedBytes);
+        }
+
+        // 3. Define Specific Users with their respective Roles and Emails
+        var defaultUsers = new[]
+        {
+            new { Name = "Super Admin", Email = "admin@bhuttaboutique.com", Role = "Admin" },
+            new { Name = "Inventory Manager", Email = "inventory@bhuttaboutique.com", Role = "InventoryManager" },
+            new { Name = "Production Supervisor", Email = "production@bhuttaboutique.com", Role = "ProductionSupervisor" },
+            new { Name = "Booking Clerk", Email = "booking@bhuttaboutique.com", Role = "BookingClerk" },
+            new { Name = "HR Manager", Email = "hr@bhuttaboutique.com", Role = "HRManager" }
+        };
+
+        // 4. Insert users if they don't already exist
+        foreach (var userInfo in defaultUsers)
+        {
+            var existingUser = context.Users.FirstOrDefault(u => u.Email == userInfo.Email);
+            if (existingUser == null)
+            {
+                var roleObj = context.Roles.First(r => r.Name == userInfo.Role);
+
+                var newUser = new User
+                {
+                    Name = userInfo.Name,
+                    Email = userInfo.Email,
+                    PasswordHash = hashedPassword,
+                    IsActive = true,
+                    RoleId = roleObj.Id
+                };
+
+                context.Users.Add(newUser);
+            }
+        }
+        context.SaveChanges();
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while seeding the database.");
+        logger.LogError(ex, "An error occurred while seeding roles and default users.");
     }
 }
 
@@ -137,8 +172,10 @@ app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
 app.MapStaticAssets();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}/{id?}")
     .WithStaticAssets();
+
 app.Run();
