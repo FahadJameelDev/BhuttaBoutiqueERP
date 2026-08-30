@@ -77,8 +77,16 @@ $(document).ready(function () {
         let features = moduleFeatures[moduleName];
 
         if (features && features.length > 0) {
-            // ✅ FIX 1: -1 → 0 (pehla feature active)
-            renderSubMenu(moduleName, 0);
+            // ✅ FIX: Sirf tabs render karo, koi forcefully active nahi
+            renderSubMenu(moduleName, -1);
+
+            // ✅ FIX: User ko select karne ka message dikhao
+            $('#main-content').html(`
+                <div class="text-center text-muted py-5">
+                    <i class="fa-solid fa-hand-pointer fa-2x mb-2"></i>
+                    <p>Please select a feature from above to continue.</p>
+                </div>
+            `);
         }
     });
 
@@ -90,10 +98,8 @@ $(document).ready(function () {
 
         let url = $(this).data('url');
         if (url) {
-            // ✅ FIX 2: URL update + force highlight
             history.pushState(null, '', url);
             loadMainContent(url);
-            highlightActiveMenuBasedOnUrl();
         }
     });
 
@@ -110,7 +116,10 @@ $(document).ready(function () {
 
         $.get(url)
             .done(function (data) {
-                $('#main-content').html(data);
+                // ✅ FIX: Duplicate page andar aane se bachao
+                let temp = $('<div>').html(data);
+                let inner = temp.find('#main-content').first();
+                $('#main-content').html(inner.length ? inner.html() : data);
             })
             .fail(function (xhr) {
                 if (xhr.status === 404) {
@@ -155,12 +164,14 @@ $(document).ready(function () {
     function highlightActiveMenuBasedOnUrl() {
         let currentPath = window.location.pathname.toLowerCase();
         let foundModule = null;
-        let foundIndex = 0;
+        let foundIndex = -1;
 
+        // Exact match check
         for (let mod in moduleFeatures) {
             let list = moduleFeatures[mod];
             for (let i = 0; i < list.length; i++) {
-                if (currentPath.includes(list[i].url.toLowerCase())) {
+                let featureUrl = list[i].url.toLowerCase();
+                if (currentPath === featureUrl || currentPath.startsWith(featureUrl + '/')) {
                     foundModule = mod;
                     foundIndex = i;
                     break;
@@ -169,9 +180,10 @@ $(document).ready(function () {
             if (foundModule) break;
         }
 
+        // Fallback
         if (!foundModule) {
             foundModule = "Inventory";
-            foundIndex = 0;
+            foundIndex = -1;
         }
 
         $('.module-link').each(function () {
