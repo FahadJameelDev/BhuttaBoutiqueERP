@@ -2,20 +2,102 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<!-- Clean Home Content (Dashboard removed from here) -->
-<div class="container-fluid py-4">
+<style>
+    .qa-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 18px;
+        margin-top: 8px;
+    }
+
+    @@media (max-width: 992px) {
+        .qa-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .qa-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    .quick-access-card {
+        background: #ffffff;
+        border: 1px solid #E2E8F0;
+        border-radius: 16px;
+        padding: 28px 14px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+        .quick-access-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 24px rgba(21, 128, 61, 0.18);
+            border-color: #16a34a;
+        }
+
+        .quick-access-card .qa-icon {
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #15803d, #14532d);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 4px 10px rgba(20, 83, 45, 0.25);
+        }
+
+        .quick-access-card h6 {
+            margin: 0;
+            font-weight: 600;
+            color: #0F172A;
+            font-size: 14px;
+        }
+</style>
+
+<div class="container-fluid py-3">
     <div class="row">
         <div class="col-12">
-            <div class="card border-0 shadow-sm rounded-3 p-5 text-center">
+            <div class="card border-0 shadow-sm rounded-3 p-5 text-center mb-4">
                 <div class="card-body">
                     <h1 class="fw-bold text-dark mb-3">
                         <i class="fas fa-home text-success me-2"></i> Welcome to Bhutta Boutique ERP
                     </h1>
-                    <p class="text-muted fs-6 mb-4">
-                        Select an option from the sidebar menu to navigate through modules and reports.
+                    <p class="text-muted fs-6 mb-0">
+                        Select a module below, or use the navigation bar above, to get started.
                     </p>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- ⚡ Quick Access Cards -->
+    <div class="qa-grid">
+        <div class="quick-access-card" data-module="Inventory" data-url="/Inventory/Items">
+            <div class="qa-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
+            <h6>Inventory</h6>
+        </div>
+        <div class="quick-access-card" data-module="Services" data-url="/Services/Catalog">
+            <div class="qa-icon"><i class="fa-solid fa-concierge-bell"></i></div>
+            <h6>Services</h6>
+        </div>
+        <div class="quick-access-card" data-module="Production" data-url="/Production/FabricDemand">
+            <div class="qa-icon"><i class="fa-solid fa-industry"></i></div>
+            <h6>Production</h6>
+        </div>
+        <div class="quick-access-card" data-module="HR" data-url="/HR/Employees">
+            <div class="qa-icon"><i class="fa-solid fa-users-gear"></i></div>
+            <h6>HR / Payroll</h6>
+        </div>
+        <div class="quick-access-card" data-module="Reports" data-url="/Reports/Dashboard">
+            <div class="qa-icon"><i class="fa-solid fa-chart-pie"></i></div>
+            <h6>Reports</h6>
         </div>
     </div>
 </div>

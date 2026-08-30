@@ -75,8 +75,7 @@
         </div>
     </nav>
 
-    <!-- 2️⃣ SUB-HEADER STRIP (All Inventory Features Mapped) -->
-    <!-- 2️⃣ SUB-HEADER STRIP (Dynamic) -->
+    <!-- 2️⃣ SUB-HEADER STRIP (Dynamic - site.js populates this) -->
     <div id="subheader-container" class="enterprise-subheader px-4 py-2">
         <ul class="nav nav-pills gap-2 overflow-auto flex-nowrap" id="sub-menu-list">
             <!-- Yahan site.js khud URL dekh kar features render karega -->
@@ -128,35 +127,56 @@
         var currentUserRole = '@(Context.Session.GetString("UserRole") ?? "Admin")';
 
         $(document).ready(function () {
-        // 1. TOP MODULE CLICK CHECK
+
+        // 1. TOP MODULE CLICK CHECK (direct bind — .module-link static hai, kabhi replace nahi hota)
         $('.module-link').on('click', function (e) {
         if (currentUserRole === 'Admin') return;
 
         var clickedModule = $(this).data('module');
         if (!isModuleAllowed(currentUserRole, clickedModule)) {
         e.preventDefault();
+        e.stopImmediatePropagation(); // site.js ka highlight handler bhi rok do
         showAccessDeniedModal();
         return false;
         }
         });
 
-        // 2. SUB-HEADER FEATURE CLICK CHECK (MISSING PIECE!)
-        $('#sub-menu-list a').on('click', function (e) {
+        // 2. SUB-HEADER FEATURE CLICK CHECK
+        // ✅ FIX: Delegated binding (document par) — kyunki #sub-menu-list ke
+        // <a> tags site.js ke renderSubMenu() se BAAR BAAR replace hote hain.
+        // Direct binding sirf pehli render ke liye kaam karti, uske baad
+        // naye <a> tags par ye check silently miss ho jaata.
+        $(document).on('click', '#sub-menu-list a', function (e) {
         if (currentUserRole === 'Admin') return;
 
         var clickedUrl = $(this).attr('data-url') || '';
         var clickedModule = '';
 
-        // URL se module pehchano
         if (clickedUrl.includes('/Inventory/')) clickedModule = 'Inventory';
         else if (clickedUrl.includes('/Services/')) clickedModule = 'Services';
         else if (clickedUrl.includes('/Production/')) clickedModule = 'Production';
         else if (clickedUrl.includes('/HR/')) clickedModule = 'HR';
         else if (clickedUrl.includes('/Reports/')) clickedModule = 'Reports';
 
-        // Role check
         if (!isModuleAllowed(currentUserRole, clickedModule)) {
         e.preventDefault();
+        e.stopImmediatePropagation();
+        showAccessDeniedModal();
+        return false;
+        }
+        });
+
+        // 3. ✅ NEW: HOME QUICK-ACCESS CARD CLICK CHECK
+        // Home/Index.cshtml ke .quick-access-card bhi isi tarah role-check honge.
+        // site.js ka .quick-access-card handler navigation karta hai —
+        // yahan hum sirf UNAUTHORIZED case ko rok ke popup dikhate hain.
+        $(document).on('click', '.quick-access-card', function (e) {
+        if (currentUserRole === 'Admin') return;
+
+        var clickedModule = $(this).data('module');
+        if (!isModuleAllowed(currentUserRole, clickedModule)) {
+        e.preventDefault();
+        e.stopImmediatePropagation(); // site.js ka navigation handler rok do
         showAccessDeniedModal();
         return false;
         }

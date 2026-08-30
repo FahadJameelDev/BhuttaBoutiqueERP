@@ -60,7 +60,7 @@ $(document).ready(function () {
     // 🌟 SMART AUTO-HIGHLIGHT: URL match karke sahi module aur sub-menu highlight karega
     highlightActiveMenuBasedOnUrl();
 
-    // 2. Main Module Switcher Handler ✅ FIXED
+    // 2. Main Module Switcher Handler
     $(document).on('click', '.module-link', function (e) {
         e.preventDefault();
         $('.module-link').removeClass('active').css({
@@ -77,10 +77,8 @@ $(document).ready(function () {
         let features = moduleFeatures[moduleName];
 
         if (features && features.length > 0) {
-            // ✅ FIX: Sirf tabs render karo, koi forcefully active nahi
             renderSubMenu(moduleName, -1);
 
-            // ✅ FIX: User ko select karne ka message dikhao
             $('#main-content').html(`
                 <div class="text-center text-muted py-5">
                     <i class="fa-solid fa-hand-pointer fa-2x mb-2"></i>
@@ -90,7 +88,7 @@ $(document).ready(function () {
         }
     });
 
-    // 3. Sub-menu Navigation Handler ✅ FIXED
+    // 3. Sub-menu Navigation Handler
     $(document).on('click', '#sub-menu-list .nav-link', function (e) {
         e.preventDefault();
         $('#sub-menu-list .nav-link').removeClass('active');
@@ -101,6 +99,48 @@ $(document).ready(function () {
             history.pushState(null, '', url);
             loadMainContent(url);
         }
+    });
+
+    // 3.5 ✅ NEW: Home Page Quick-Access Card Handler (Role-Check Included)
+    $(document).on('click', '.quick-access-card', function () {
+        let moduleName = $(this).data('module');
+        let url = $(this).data('url');
+
+        if (!moduleName || !url) return;
+
+        // 🔒 Role/Authorization check (same logic as Layout's isModuleAllowed)
+        if (typeof currentUserRole !== 'undefined' &&
+            currentUserRole !== 'Admin' &&
+            typeof isModuleAllowed === 'function' &&
+            !isModuleAllowed(currentUserRole, moduleName)) {
+            if (typeof showAccessDeniedModal === 'function') {
+                showAccessDeniedModal();
+            }
+            return; // ❌ Blocked — kahin navigate nahi karega
+        }
+
+        // ✅ Allowed — top navbar module highlight karo
+        $('.module-link').removeClass('active').css({
+            'background': 'transparent',
+            'border': 'none'
+        }).addClass('text-white');
+
+        $('.module-link[data-module="' + moduleName + '"]')
+            .addClass('active').css({
+                'background': 'rgba(255, 255, 255, 0.15)',
+                'border': '1px solid rgba(255, 255, 255, 0.2)'
+            }).removeClass('text-white');
+
+        // Sub-menu render karo, matching feature ko active dikhao
+        let features = moduleFeatures[moduleName];
+        if (!features) return;
+
+        let matchedIndex = features.findIndex(f => f.url.toLowerCase() === url.toLowerCase());
+        renderSubMenu(moduleName, matchedIndex >= 0 ? matchedIndex : 0);
+
+        // Seedha us feature ka content load karo
+        history.pushState(null, '', url);
+        loadMainContent(url);
     });
 
     // 4. Core Content Loader Function via AJAX GET
@@ -116,7 +156,6 @@ $(document).ready(function () {
 
         $.get(url)
             .done(function (data) {
-                // ✅ FIX: Duplicate page andar aane se bachao
                 let temp = $('<div>').html(data);
                 let inner = temp.find('#main-content').first();
                 $('#main-content').html(inner.length ? inner.html() : data);
@@ -166,7 +205,6 @@ $(document).ready(function () {
         let foundModule = null;
         let foundIndex = -1;
 
-        // Exact match check
         for (let mod in moduleFeatures) {
             let list = moduleFeatures[mod];
             for (let i = 0; i < list.length; i++) {
@@ -180,7 +218,6 @@ $(document).ready(function () {
             if (foundModule) break;
         }
 
-        // Fallback
         if (!foundModule) {
             foundModule = "Inventory";
             foundIndex = -1;
