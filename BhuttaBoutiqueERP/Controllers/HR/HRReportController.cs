@@ -46,34 +46,45 @@ namespace BhuttaBoutiqueERP.Controllers.HR
             if (reportType == "Attendance")
             {
                 reportData = await _context.Attendances
+                    .AsNoTracking()
                     .Include(a => a.Employee)
                     .OrderByDescending(a => a.Date)
+                    .Take(500)
                     .ToListAsync();
             }
             else if (reportType == "Payroll")
             {
                 reportData = await _context.Payrolls
+                    .AsNoTracking()
                     .Include(p => p.Employee)
                     .OrderByDescending(p => p.Id)
+                    .Take(500)
                     .ToListAsync();
             }
             else if (reportType == "Leave")
             {
                 reportData = await _context.Leaves
+                    .AsNoTracking()
                     .Include(l => l.Employee)
                     .OrderByDescending(l => l.StartDate)
+                    .Take(500)
                     .ToListAsync();
             }
             else if (reportType == "Advance")
             {
                 reportData = await _context.Advances
+                    .AsNoTracking()
                     .Include(a => a.Employee)
                     .OrderByDescending(a => a.Date)
+                    .Take(500)
                     .ToListAsync();
             }
             else
             {
-                reportData = await _context.Employees.ToListAsync();
+                reportData = await _context.Employees
+                    .AsNoTracking()
+                    .Take(500)
+                    .ToListAsync();
             }
 
             // Check for AJAX request if opened via modal/dynamic loader

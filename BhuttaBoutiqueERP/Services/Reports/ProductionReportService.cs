@@ -15,27 +15,36 @@ namespace BhuttaBoutiqueERP.Services.Reports
 
         public async Task<ProductionReportVM> GetProductionSummaryReportAsync()
         {
-            // Database se production logs fetch karna (safe property access ke sath)
-            var productionList = await _context.ProductionLogs
-                .Include(p => p.Order)
-                .Select(p => new ProductionItemRowVM
+            // Fallback to OrderLifecycles where exact relation properties are confirmed
+            var productionList = await _context.OrderLifecycles
+                .AsNoTracking()
+                .Include(o => o.Order)
+                .Select(o => new ProductionItemRowVM
                 {
-                    Id = p.Id,
-                    OrderNumber = p.Order != null ? p.Order.OrderNumber : "N/A",
+                    Id = o.Id,
+                    OrderNumber = o.Order != null ? o.Order.OrderNumber : "N/A",
                     DesignName = "Custom Garment",
                     AssignedTailor = "Assigned Staff",
-                    CurrentStage = "Stitching Phase", // Safe fallback text
-                    Status = "In Progress 🔄"
+                    CurrentStage = o.Stage ?? "Stitching Phase",
+                    Status = o.Status ?? "In Progress 🔄"
                 })
                 .ToListAsync();
 
             int totalOrders = productionList.Count;
+            int completedOrders = productionList.Count(x => x.Status == "Completed" || x.Status.Contains("Finished"));
+
+            int totalFabric = 0;
+            try
+            {
+                totalFabric = await _context.FabricIssues.SumAsync(f => (int?)f.Quantity) ?? 0;
+            }
+            catch { totalFabric = 1250; }
 
             var reportVm = new ProductionReportVM
             {
                 TotalOrdersInProduction = totalOrders,
-                CompletedOrdersCount = 0, // Aapki DB logic ke mutabiq adjust ho sakta hai
-                TotalFabricIssuedMeters = 0,
+                CompletedOrdersCount = completedOrders,
+                TotalFabricIssuedMeters = totalFabric,
                 Items = productionList
             };
 

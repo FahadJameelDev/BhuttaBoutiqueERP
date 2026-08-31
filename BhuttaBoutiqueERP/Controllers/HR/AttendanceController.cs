@@ -21,8 +21,10 @@ namespace BhuttaBoutiqueERP.Controllers.HR
         public async Task<IActionResult> Index()
         {
             var attendances = await _context.Attendances
+                .AsNoTracking()
                 .Include(a => a.Employee)
                 .OrderByDescending(a => a.Date)
+                .Take(250)
                 .ToListAsync();
 
             return View("~/Views/HR/Attendance/Index.cshtml", attendances);
