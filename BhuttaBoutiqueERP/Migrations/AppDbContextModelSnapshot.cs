@@ -55,7 +55,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActivityLogs");
+                    b.ToTable("ActivityLogs", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Auth.Entities.Role", b =>
@@ -81,7 +81,7 @@ namespace BhuttaBoutiqueERP.Migrations
                         .IsUnique()
                         .HasFilter("[Name] IS NOT NULL");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Auth.Entities.User", b =>
@@ -118,7 +118,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.HR.Entities.Advance", b =>
@@ -157,7 +157,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("Advances");
+                    b.ToTable("Advances", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.HR.Entities.Attendance", b =>
@@ -195,7 +195,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("Attendances");
+                    b.ToTable("Attendances", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.HR.Entities.CommissionRate", b =>
@@ -231,7 +231,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("CommissionRates");
+                    b.ToTable("CommissionRates", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.HR.Entities.Employee", b =>
@@ -296,7 +296,7 @@ namespace BhuttaBoutiqueERP.Migrations
                     b.HasIndex("Phone")
                         .IsUnique();
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.HR.Entities.Leave", b =>
@@ -330,7 +330,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("Leaves");
+                    b.ToTable("Leaves", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.HR.Entities.Payroll", b =>
@@ -376,7 +376,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("Payrolls");
+                    b.ToTable("Payrolls", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Inventory.Entities.Item", b =>
@@ -423,7 +423,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Items");
+                    b.ToTable("Items", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Inventory.Entities.OrderItem", b =>
@@ -453,7 +453,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Inventory.Entities.StockIn", b =>
@@ -490,7 +490,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("StockIns");
+                    b.ToTable("StockIns", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Inventory.Entities.StockOut", b =>
@@ -525,7 +525,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("StockOuts");
+                    b.ToTable("StockOuts", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Inventory.Entities.StockReturn", b =>
@@ -559,7 +559,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("StockOutId");
 
-                    b.ToTable("StockReturns");
+                    b.ToTable("StockReturns", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Inventory.Entities.Supplier", b =>
@@ -595,7 +595,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Suppliers");
+                    b.ToTable("Suppliers", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Inventory.Entities.Wastage", b =>
@@ -629,7 +629,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("Wastages");
+                    b.ToTable("Wastages", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Production.Entities.DemandAllocation", b =>
@@ -666,7 +666,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("DemandAllocations");
+                    b.ToTable("DemandAllocations", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Production.Entities.FabricIssue", b =>
@@ -705,7 +705,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("FabricIssues");
+                    b.ToTable("FabricIssues", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Production.Entities.OrderLifecycle", b =>
@@ -748,7 +748,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderLifecycles");
+                    b.ToTable("OrderLifecycles", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Production.Entities.ProductionLog", b =>
@@ -783,7 +783,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("ProductionLogs");
+                    b.ToTable("ProductionLogs", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Services.Entities.BulkOrder", b =>
@@ -821,7 +821,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("BulkOrders");
+                    b.ToTable("BulkOrders", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Services.Entities.Customer", b =>
@@ -869,7 +869,7 @@ namespace BhuttaBoutiqueERP.Migrations
                     b.HasIndex("Phone")
                         .IsUnique();
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Services.Entities.DesignLibrary", b =>
@@ -914,7 +914,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DesignLibraries");
+                    b.ToTable("DesignLibraries", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Services.Entities.Measurement", b =>
@@ -986,7 +986,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Measurements");
+                    b.ToTable("Measurements", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Services.Entities.Order", b =>
@@ -1041,7 +1041,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Services.Entities.Payment", b =>
@@ -1075,7 +1075,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Services.Entities.ServiceCatalog", b =>
@@ -1117,7 +1117,7 @@ namespace BhuttaBoutiqueERP.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ServiceCatalogs");
+                    b.ToTable("ServiceCatalogs", (string)null);
                 });
 
             modelBuilder.Entity("BhuttaBoutiqueERP.Models.Auth.Entities.User", b =>

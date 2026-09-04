@@ -83,10 +83,11 @@ builder.Services.AddScoped<IHRReportService, HRReportService>();
 builder.Services.AddScoped<IFinancialReportService, FinancialReportService>();
 builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
 
-// Controllers and Global Exception Filter Registration
+// Controllers and Global Exception & Audit Filters Registration
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<BhuttaBoutiqueERP.Filters.GlobalExceptionFilter>();
+    options.Filters.Add<BhuttaBoutiqueERP.Filters.GlobalAuditFilter>(); // Yeh line yahan add kar do
 });
 
 var app = builder.Build();

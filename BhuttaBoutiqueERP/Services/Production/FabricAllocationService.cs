@@ -49,6 +49,7 @@ namespace BhuttaBoutiqueERP.Services.Production
 
             demand.AllocatedQuantity = model.AllocatedQuantity;
             demand.Status = "Allocated";
+            demand.Date = DateTime.Now;  // ✅ YEH LINE ADD KI HAI
 
             item.Stock -= model.AllocatedQuantity;
 

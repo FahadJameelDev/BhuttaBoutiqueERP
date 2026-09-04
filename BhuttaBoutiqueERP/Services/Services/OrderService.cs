@@ -35,7 +35,6 @@ namespace BhuttaBoutiqueERP.Services.Services
 
         public async Task<Order> CreateAsync(OrderViewModel model)
         {
-            // ✅ Remaining auto-calculate (Business Logic)
             var remaining = model.Total - model.Advance;
 
             var order = new Order
@@ -45,7 +44,7 @@ namespace BhuttaBoutiqueERP.Services.Services
                 ServiceId = model.ServiceId,
                 Total = model.Total,
                 Advance = model.Advance,
-                Remaining = remaining,  // ✅ Auto-calculated
+                Remaining = remaining,
                 PaymentMethod = model.PaymentMethod,
                 Status = model.Status,
                 OrderDate = model.OrderDate,
@@ -67,7 +66,7 @@ namespace BhuttaBoutiqueERP.Services.Services
             order.ServiceId = model.ServiceId;
             order.Total = model.Total;
             order.Advance = model.Advance;
-            order.Remaining = model.Total - model.Advance;  // ✅ Update par bhi calculate
+            order.Remaining = model.Total - model.Advance;
             order.PaymentMethod = model.PaymentMethod;
             order.Status = model.Status;
             order.DeliveryDate = model.DeliveryDate;
@@ -76,12 +75,22 @@ namespace BhuttaBoutiqueERP.Services.Services
             return order;
         }
 
+        // ✅ FIXED DELETE
         public async Task<bool> DeleteAsync(int id)
         {
             var order = await _context.Orders.FindAsync(id);
             if (order == null)
                 return false;
 
+            // 1. Saare child records pehle delete karo
+            _context.Payments.RemoveRange(_context.Payments.Where(x => x.OrderId == id));
+            _context.Measurements.RemoveRange(_context.Measurements.Where(x => x.OrderId == id));
+            _context.DemandAllocations.RemoveRange(_context.DemandAllocations.Where(x => x.OrderId == id));
+            _context.FabricIssues.RemoveRange(_context.FabricIssues.Where(x => x.OrderId == id));
+            _context.OrderLifecycles.RemoveRange(_context.OrderLifecycles.Where(x => x.OrderId == id));
+            _context.ProductionLogs.RemoveRange(_context.ProductionLogs.Where(x => x.OrderId == id));
+
+            // 2. Ab Order delete karo
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
             return true;

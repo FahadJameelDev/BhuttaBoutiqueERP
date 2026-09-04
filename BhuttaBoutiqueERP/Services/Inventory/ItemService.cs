@@ -70,28 +70,34 @@ namespace BhuttaBoutiqueERP.Services.Inventory
             if (item == null)
                 return false;
 
-            // 1. StockIns se is item ke records remove karein (agar hain)
-            var stockIns = await _context.StockIns.Where(s => s.ItemId == id).ToListAsync();
-            if (stockIns.Any())
-            {
-                _context.StockIns.RemoveRange(stockIns);
-            }
+            // 1. StockOuts ke IDs nikalein
+            var stockOutIds = await _context.StockOuts
+                .Where(s => s.ItemId == id)
+                .Select(s => s.Id)
+                .ToListAsync();
 
-            // 2. StockOuts se is item ke records remove karein (agar hain)
-            var stockOuts = await _context.StockOuts.Where(s => s.ItemId == id).ToListAsync();
-            if (stockOuts.Any())
-            {
-                _context.StockOuts.RemoveRange(stockOuts);
-            }
+            // 2. StockReturns ko pehle delete karo
+            _context.StockReturns.RemoveRange(
+                _context.StockReturns.Where(x => stockOutIds.Contains(x.StockOutId))
+            );
 
-            // 3. StockReturns se is item ke records remove karein (agar hain)
-            var stockReturns = await _context.StockReturns.Where(s => s.ItemId == id).ToListAsync();
-            if (stockReturns.Any())
-            {
-                _context.StockReturns.RemoveRange(stockReturns);
-            }
+            // 3. StockOuts, StockIns delete karo
+            _context.StockOuts.RemoveRange(_context.StockOuts.Where(x => x.ItemId == id));
+            _context.StockIns.RemoveRange(_context.StockIns.Where(x => x.ItemId == id));
 
-            // 4. Ab Item ko safely delete karein
+            // 4. Wastages delete karo
+            _context.Wastages.RemoveRange(_context.Wastages.Where(x => x.ItemId == id));
+
+            // 5. DemandAllocations delete karo
+            _context.DemandAllocations.RemoveRange(_context.DemandAllocations.Where(x => x.ItemId == id));
+
+            // 6. FabricIssues delete karo
+            _context.FabricIssues.RemoveRange(_context.FabricIssues.Where(x => x.ItemId == id));
+
+            // 7. OrderItems delete karo
+            _context.OrderItems.RemoveRange(_context.OrderItems.Where(x => x.ItemId == id));
+
+            // 8. Ab Item ko safely delete karein
             _context.Items.Remove(item);
             await _context.SaveChangesAsync();
             return true;

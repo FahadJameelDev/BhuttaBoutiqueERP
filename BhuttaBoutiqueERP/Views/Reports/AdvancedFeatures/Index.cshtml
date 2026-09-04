@@ -6,59 +6,91 @@
 
 <div class="container-fluid px-4">
     <!-- 1️⃣ HEADER STRIP -->
-    <div class="sticky-header-strip d-flex justify-content-between align-items-center py-3 mb-4 border-bottom bg-white">
-        <div>
-            <h1 class="h3 mb-0 text-gray-800">Advanced Features & Tools</h1>
-            <p class="text-muted small mb-0">Global search, data export tools, and real-time audit logs.</p>
-        </div>
-        <div class="d-flex gap-2">
-            <!-- Real Print / PDF Export Button -->
-            <button class="btn btn-outline-primary btn-sm" onclick="printTableReport()">
-                <i class="fas fa-print me-1"></i> Print / PDF
-            </button>
-            <!-- Real CSV Download Button -->
-            <button class="btn btn-outline-success btn-sm" onclick="exportTableToCSV('activity_logs.csv')">
-                <i class="fas fa-file-csv me-1"></i> Export CSV
-            </button>
-            <!-- Refresh Logs -->
-            <button class="btn btn-outline-secondary btn-sm" onclick="window.location.reload();">
-                <i class="fas fa-sync-alt me-1"></i> Refresh
-            </button>
+    <div class="py-3 mb-4 border-bottom bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h3 mb-0 text-gray-800">Advanced Features & Tools</h1>
+                <p class="text-muted small mb-0">Global search, data export tools, and real-time audit logs.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary btn-sm" onclick="printSelectedRows()">
+                    <i class="fas fa-print me-1"></i> Print Selected
+                </button>
+                <button class="btn btn-outline-success btn-sm" onclick="exportTableToCSV('activity_logs.csv')">
+                    <i class="fas fa-file-csv me-1"></i> Export CSV
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="window.location.reload();">
+                    <i class="fas fa-sync-alt me-1"></i> Refresh
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- 🔍 GLOBAL SEARCH & FILTER TOOL BAR -->
+    <!-- 🔍 ADVANCED DROPDOWN FILTERS BAR -->
     <div class="card shadow-sm border-0 mb-4 p-3 bg-light">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                    <input type="text" id="globalSearchInput" class="form-control border-start-0" placeholder="Global Search: Type user, action, or module to filter instantly..." onkeyup="filterTable()">
-                </div>
+        <div class="row g-3 align-items-center">
+            <!-- Filter by User -->
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-secondary mb-1">Filter by User</label>
+                <select id="filterUser" class="form-select form-select-sm" onchange="filterTable()">
+                    <option value="">All Users</option>
+                    <option value="admin@bhuttaboutique.com">admin@bhuttaboutique.com</option>
+                    <option value="booking@bhuttaboutique.com">booking@bhuttaboutique.com</option>
+                    <option value="hr@bhuttaboutique.com">hr@bhuttaboutique.com</option>
+                    <option value="inventory@bhuttaboutique.com">inventory@bhuttaboutique.com</option>
+                    <option value="production@bhuttaboutique.com">production@bhuttaboutique.com</option>
+                </select>
             </div>
-            <div class="col-md-4 text-md-end mt-2 mt-md-0">
-                <span class="text-muted small"><i class="fas fa-info-circle me-1"></i> Instant live search active</span>
+            <!-- Filter by Action -->
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-secondary mb-1">Filter by Action</label>
+                <select id="filterAction" class="form-select form-select-sm" onchange="filterTable()">
+                    <option value="">All Actions</option>
+                    <option value="Create">Create</option>
+                    <option value="Update">Update</option>
+                    <option value="Delete">Delete</option>
+                </select>
+            </div>
+            <!-- Filter by Module -->
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-secondary mb-1">Filter by Module</label>
+                <select id="filterModule" class="form-select form-select-sm" onchange="filterTable()">
+                    <option value="">All Modules</option>
+                    <option value="Inventory">Inventory</option>
+                    <option value="Services">Services</option>
+                    <option value="Production">Production</option>
+                    <option value="HR/Payroll">HR/Payroll</option>
+                    <option value="Reports">Reports</option>
+                </select>
+            </div>
+            <!-- Reset Button -->
+            <div class="col-md-3 text-md-end mt-4">
+                <button class="btn btn-outline-dark btn-sm w-100" onclick="resetFilters()">
+                    <i class="fas fa-undo me-1"></i> Reset Filters
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- 2️⃣ TABLE WRAPPER -->
-    <div class="card shadow-sm border-0">
+    <!-- 2️⃣ TABLE WRAPPER WITH INTERNAL SCROLL & STICKY HEADER -->
+    <div class="card shadow-sm border-0 mb-4">
         <div class="card-header bg-white py-3">
             <h5 class="mb-0 text-secondary fw-bold">System Activity Logs & Audit Trail</h5>
         </div>
-        <div class="table-responsive sticky-table-wrap" style="max-height: 500px; overflow-y: auto;">
+        <div class="table-responsive" style="max-height: 450px; overflow-y: auto; position: relative;">
             <table class="table table-hover align-middle mb-0" id="logsTable">
-                <!-- 3️⃣ THEAD -->
-                <thead class="bg-light text-secondary text-uppercase fs-7 sticky-top" style="z-index: 1;">
+                <thead class="text-uppercase fs-7" style="position: sticky; top: 0; background-color: #198754; color: white; z-index: 10;">
                     <tr>
-                        <th class="ps-4">#</th>
-                        <th>User</th>
-                        <th>Action</th>
-                        <th>Module</th>
-                        <th>Description</th>
-                        <th>Timestamp</th>
-                        <th class="pe-4">IP Address</th>
+                        <th class="ps-4" style="width: 40px; background-color: #198754; color: white;">
+                            <input type="checkbox" id="selectAll" />
+                        </th>
+                        <th style="background-color: #198754; color: white;">#</th>
+                        <th style="background-color: #198754; color: white;">User</th>
+                        <th style="background-color: #198754; color: white;">Action</th>
+                        <th style="background-color: #198754; color: white;">Module</th>
+                        <th style="background-color: #198754; color: white;">Description</th>
+                        <th style="background-color: #198754; color: white;">Timestamp</th>
+                        <th class="pe-4" style="background-color: #198754; color: white;">IP Address</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,14 +100,17 @@
                         foreach (var item in Model)
                         {
                             <tr>
-                                <td class="ps-4">@(index++)</td>
-                                <td><span class="fw-bold text-dark">@item.UserName</span></td>
-                                <td>
+                                <td class="ps-4">
+                                    <input type="checkbox" class="row-checkbox" />
+                                </td>
+                                <td>@(index++)</td>
+                                <td class="td-user"><span class="fw-bold text-dark">@item.UserName</span></td>
+                                <td class="td-action">
                                     <span class="badge @(item.ActionType == "Delete" ? "bg-danger" : item.ActionType == "Update" ? "bg-warning text-dark" : "bg-success")">
                                         @item.ActionType
                                     </span>
                                 </td>
-                                <td><span class="text-muted">@item.ModuleName</span></td>
+                                <td class="td-module"><span class="text-muted">@item.ModuleName</span></td>
                                 <td>@item.Description</td>
                                 <td>@item.Timestamp.ToString("dd MMM yyyy, hh:mm tt")</td>
                                 <td class="pe-4 font-monospace text-muted small">@item.IpAddress</td>
@@ -84,9 +119,8 @@
                     }
                     else
                     {
-                        <!-- 5️⃣ EMPTY STATE -->
                         <tr>
-                            <td colspan="7" class="text-center py-5">
+                            <td colspan="8" class="text-center py-5">
                                 <div class="text-muted">
                                     <i class="fas fa-inbox fa-3x mb-3"></i>
                                     <p class="mb-0">No system activity logs found yet.</p>
@@ -100,37 +134,71 @@
     </div>
 </div>
 
-<!-- JavaScript for Search, Print, and CSV Export -->
+<!-- JavaScript for Dropdown Filtering, Select All, Print Selected, & Export -->
 <script>
-    // 1️⃣ Live Global Search Filter Function
-    function filterTable() {
-        var input, filter, table, tr, td, i, j, txtValue;
-        input = document.getElementById("globalSearchInput");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("logsTable");
-        tr = table.getElementsByTagName("tr");
+    // Select All Checkbox Toggle
+    document.getElementById('selectAll').addEventListener('change', function () {
+        var checkboxes = document.querySelectorAll('.row-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
 
-        for (i = 1; i < tr.length; i++) {
-            tr[i].style.display = "none";
-            td = tr[i].getElementsByTagName("td");
-            for (j = 0; j < td.length; j++) {
-                if (td[j]) {
-                    txtValue = td[j].textContent || td[j].innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        tr[i].style.display = "";
-                        break;
-                    }
-                }
-            }
+    // Print Only Selected Rows Function
+    function printSelectedRows() {
+        var selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+        if (selectedCheckboxes.length === 0) {
+            alert('Please select at least one row to print.');
+            return;
         }
-    }
 
-    // 2️⃣ Print Report Function
-    function printTableReport() {
+        var allRows = document.querySelectorAll('#logsTable tbody tr');
+        
+        allRows.forEach(row => {
+            var cb = row.querySelector('.row-checkbox');
+            if (cb && !cb.checked) {
+                row.style.display = 'none';
+            }
+        });
+
         window.print();
+
+        allRows.forEach(row => {
+            row.style.display = '';
+        });
     }
 
-    // 3️⃣ Export Table to CSV File Function
+    function filterTable() {
+        var selectedUser = document.getElementById("filterUser").value.toLowerCase().trim();
+        var selectedAction = document.getElementById("filterAction").value.toLowerCase().trim();
+        var selectedModule = document.getElementById("filterModule").value.toLowerCase().trim();
+        
+        var rows = document.querySelectorAll("#logsTable tbody tr");
+
+        rows.forEach(row => {
+            if (row.querySelector("td[colspan]")) return;
+
+            var userText = row.querySelector(".td-user").innerText.toLowerCase().trim();
+            var actionText = row.querySelector(".td-action").innerText.toLowerCase().trim();
+            var moduleText = row.querySelector(".td-module").innerText.toLowerCase().trim();
+
+            var matchesUser = (selectedUser === "" || userText === selectedUser);
+            var matchesAction = (selectedAction === "" || actionText === selectedAction);
+            var matchesModule = (selectedModule === "" || moduleText === selectedModule);
+
+            if (matchesUser && matchesAction && matchesModule) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    function resetFilters() {
+        document.getElementById("filterUser").value = "";
+        document.getElementById("filterAction").value = "";
+        document.getElementById("filterModule").value = "";
+        filterTable();
+    }
+
     function exportTableToCSV(filename) {
         var csv = [];
         var rows = document.querySelectorAll("#logsTable tr");
@@ -138,14 +206,12 @@
         for (var i = 0; i < rows.length; i++) {
             var row = [], cols = rows[i].querySelectorAll("td, th");
             for (var j = 0; j < cols.length; j++) {
-                // Clean text and handle commas
                 var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/(\s\s)/gm, " ");
                 row.push('"' + data + '"');
             }
             csv.push(row.join(","));
         }
 
-        // Download CSV file
         var csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
         var downloadLink = document.createElement("a");
         downloadLink.download = filename;

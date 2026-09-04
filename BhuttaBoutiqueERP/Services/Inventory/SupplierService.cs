@@ -65,6 +65,10 @@ namespace BhuttaBoutiqueERP.Services.Inventory
             if (supplier == null)
                 return false;
 
+            // 1. StockIns ko pehle delete karo
+            _context.StockIns.RemoveRange(_context.StockIns.Where(x => x.SupplierId == id));
+
+            // 2. Ab Supplier ko delete karo
             _context.Suppliers.Remove(supplier);
             await _context.SaveChangesAsync();
             return true;

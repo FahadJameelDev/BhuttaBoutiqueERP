@@ -5,15 +5,15 @@
 }
 
 <div class="container-fluid px-4">
-    <!-- 1️⃣ HEADER STRIP (Golden Rule Applied) -->
+    <!-- Header Strip -->
     <div class="sticky-header-strip d-flex justify-content-between align-items-center py-3 mb-4 border-bottom bg-white">
         <div>
             <h1 class="h3 mb-0 text-gray-800">Production Reports</h1>
             <p class="text-muted small mb-0">Track manufacturing pipelines, tailor assignments, and workflow stages.</p>
         </div>
         <div>
-            <button class="btn btn-primary" onclick="window.print();">
-                <i class="fas fa-print me-1"></i> Print / Export
+            <button class="btn btn-primary" onclick="printSelectedRows()">
+                <i class="fas fa-print me-1"></i> Print Selected
             </button>
         </div>
     </div>
@@ -40,14 +40,16 @@
         </div>
     </div>
 
-    <!-- 2️⃣ TABLE WRAPPER (Golden Rule Applied) -->
+    <!-- Table Wrapper -->
     <div class="card shadow-sm border-0">
         <div class="table-responsive sticky-table-wrap" style="max-height: 600px; overflow-y: auto;">
-            <table class="table table-hover align-middle mb-0">
-                <!-- 3️⃣ THEAD (Golden Rule Applied) -->
+            <table class="table table-hover align-middle mb-0" id="reportTable">
                 <thead class="bg-light text-secondary text-uppercase fs-7 sticky-top" style="z-index: 1;">
                     <tr>
-                        <th class="ps-4">#</th>
+                        <th class="ps-4" style="width: 40px;">
+                            <input type="checkbox" id="selectAll" />
+                        </th>
+                        <th>#</th>
                         <th>Order Number</th>
                         <th>Design Name</th>
                         <th>Assigned Tailor</th>
@@ -62,7 +64,10 @@
                         foreach (var item in Model.Items)
                         {
                             <tr>
-                                <td class="ps-4">@(index++)</td>
+                                <td class="ps-4">
+                                    <input type="checkbox" class="row-checkbox" />
+                                </td>
+                                <td>@(index++)</td>
                                 <td><span class="fw-bold">@item.OrderNumber</span></td>
                                 <td>@item.DesignName</td>
                                 <td>@item.AssignedTailor</td>
@@ -77,9 +82,9 @@
                     }
                     else
                     {
-                        <!-- 5️⃣ EMPTY STATE (Golden Rule Applied) -->
+                        <!-- Empty State -->
                         <tr>
-                            <td colspan="6" class="text-center py-5">
+                            <td colspan="7" class="text-center py-5">
                                 <div class="text-muted">
                                     <i class="fas fa-inbox fa-3x mb-3"></i>
                                     <p class="mb-0">No production logs found.</p>
@@ -92,3 +97,38 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Select All Checkbox Toggle
+    document.getElementById('selectAll').addEventListener('change', function () {
+        var checkboxes = document.querySelectorAll('.row-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+
+    // Print Only Selected Rows Function
+    function printSelectedRows() {
+        var selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+        if (selectedCheckboxes.length === 0) {
+            alert('Please select at least one row to print.');
+            return;
+        }
+
+        var allRows = document.querySelectorAll('#reportTable tbody tr');
+        
+        // Hide unselected rows temporarily
+        allRows.forEach(row => {
+            var cb = row.querySelector('.row-checkbox');
+            if (cb && !cb.checked) {
+                row.style.display = 'none';
+            }
+        });
+
+        // Trigger Browser Print Dialog
+        window.print();
+
+        // Restore hidden rows back after printing
+        allRows.forEach(row => {
+            row.style.display = '';
+        });
+    }
+</script>

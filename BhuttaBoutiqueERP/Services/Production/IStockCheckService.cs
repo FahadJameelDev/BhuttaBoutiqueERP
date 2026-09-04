@@ -7,5 +7,6 @@ namespace BhuttaBoutiqueERP.Services.Production
         Task<bool> CheckAvailabilityAsync(int itemId, decimal quantity);
         Task<decimal> GetAvailableStockAsync(int itemId);
         Task<bool> ValidateDemandAsync(int orderId);
+        Task<Dictionary<int, decimal>> GetAllAvailableStockAsync();
     }
 }

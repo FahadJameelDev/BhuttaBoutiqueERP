@@ -63,12 +63,35 @@ namespace BhuttaBoutiqueERP.Services.Services
             return service;
         }
 
+        // ✅ FINAL FIXED DELETE (Production Module Included)
         public async Task<bool> DeleteAsync(int id)
         {
             var service = await _context.ServiceCatalogs.FindAsync(id);
             if (service == null)
                 return false;
 
+            // 1. Is service ke saare Orders ke IDs nikalo
+            var orderIds = await _context.Orders
+                .Where(o => o.ServiceId == id)
+                .Select(o => o.Id)
+                .ToListAsync();
+
+            // 2. Production Module (OrderLifecycles, FabricIssues, ProductionLogs) delete karo
+            _context.OrderLifecycles.RemoveRange(_context.OrderLifecycles.Where(x => orderIds.Contains(x.OrderId)));
+            _context.FabricIssues.RemoveRange(_context.FabricIssues.Where(x => orderIds.Contains(x.OrderId)));
+            _context.ProductionLogs.RemoveRange(_context.ProductionLogs.Where(x => orderIds.Contains(x.OrderId)));
+
+            // 3. DemandAllocations, OrderItems delete karo
+            _context.DemandAllocations.RemoveRange(_context.DemandAllocations.Where(x => orderIds.Contains(x.OrderId)));
+            _context.OrderItems.RemoveRange(_context.OrderItems.Where(x => orderIds.Contains(x.OrderId)));
+
+            // 4. Child records delete karo
+            _context.Measurements.RemoveRange(_context.Measurements.Where(x => orderIds.Contains(x.OrderId)));
+            _context.Payments.RemoveRange(_context.Payments.Where(x => orderIds.Contains(x.OrderId)));
+            _context.CommissionRates.RemoveRange(_context.CommissionRates.Where(x => x.ServiceId == id));
+            _context.Orders.RemoveRange(_context.Orders.Where(x => x.ServiceId == id));
+
+            // 5. Ab ServiceCatalog delete karo
             _context.ServiceCatalogs.Remove(service);
             await _context.SaveChangesAsync();
             return true;

@@ -24,11 +24,15 @@ namespace BhuttaBoutiqueERP.Controllers.Production
         public async Task<IActionResult> Index()
         {
             var items = await _itemService.GetAllAsync();
+
+            // ✅ N+1 Query Fix: Ek hi baar mein saare Items ke Available Stock nikaalo
+            var allStockData = await _stockCheckService.GetAllAvailableStockAsync();
+
             var stockList = new List<StockCheckViewModel>();
 
             foreach (var item in items)
             {
-                var available = await _stockCheckService.GetAvailableStockAsync(item.Id);
+                var available = allStockData.ContainsKey(item.Id) ? allStockData[item.Id] : item.Stock;
                 stockList.Add(new StockCheckViewModel
                 {
                     Id = item.Id,

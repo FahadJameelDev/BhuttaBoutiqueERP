@@ -260,6 +260,7 @@ namespace BhuttaBoutiqueERP.Data
                 .WithMany()
                 .HasForeignKey(cr => cr.ServiceId)
                 .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }
