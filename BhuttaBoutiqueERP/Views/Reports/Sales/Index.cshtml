@@ -12,8 +12,8 @@
             <p class="text-muted mb-0">Track revenue, order volumes, and customer payment statuses.</p>
         </div>
         <div>
-            <button onclick="window.print();" class="btn btn-outline-secondary shadow-sm">
-                <i class="fas fa-print me-1"></i> Print Report
+            <button class="btn btn-primary shadow-sm" onclick="printSelectedRows()">
+                <i class="fas fa-print me-1"></i> Print Selected
             </button>
         </div>
     </div>
@@ -91,13 +91,16 @@
             <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-list me-2 text-primary"></i>Sales Transaction Details</h5>
         </div>
         <div class="card-body p-0">
-            <!-- 2️⃣ Table Wrapper Pattern -->
-            <div class="table-responsive sticky-table-wrap">
-                <table class="table table-hover align-middle mb-0">
+            <!-- 2️⃣ Table Wrapper Pattern with Scroll & Sticky Header -->
+            <div class="table-responsive sticky-table-wrap" style="max-height: 600px; overflow-y: auto;">
+                <table class="table table-hover align-middle mb-0" id="reportTable">
                     <!-- 3️⃣ Thead Pattern -->
-                    <thead class="bg-light text-secondary text-uppercase fs-7">
+                    <thead class="bg-light text-secondary text-uppercase fs-7 sticky-top" style="z-index: 1;">
                         <tr>
-                            <th class="ps-4">Order #</th>
+                            <th class="ps-4" style="width: 40px;">
+                                <input type="checkbox" id="selectAll" />
+                            </th>
+                            <th>Order #</th>
                             <th>Customer</th>
                             <th>Date</th>
                             <th>Total (Rs.)</th>
@@ -113,7 +116,10 @@
                             foreach (var item in Model.SalesRecords)
                             {
                                 <tr>
-                                    <td class="ps-4 fw-bold text-primary">@item.OrderNumber</td>
+                                    <td class="ps-4">
+                                        <input type="checkbox" class="row-checkbox" />
+                                    </td>
+                                    <td class="fw-bold text-primary">@item.OrderNumber</td>
                                     <td>
                                         <div class="fw-semibold text-dark">@item.CustomerName</div>
                                         <small class="text-muted">@item.CustomerPhone</small>
@@ -146,7 +152,7 @@
                         {
                             <!-- 5️⃣ Empty State Pattern -->
                             <tr>
-                                <td colspan="8" class="text-center py-5 text-muted">
+                                <td colspan="9" class="text-center py-5 text-muted">
                                     <i class="fas fa-inbox fa-3x mb-3 text-secondary opacity-50 d-block"></i>
                                     <span class="fw-semibold">No sales records found for the selected criteria.</span>
                                 </td>
@@ -158,3 +164,38 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Select All Checkbox Toggle
+    document.getElementById('selectAll').addEventListener('change', function () {
+        var checkboxes = document.querySelectorAll('.row-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+
+    // Print Only Selected Rows Function
+    function printSelectedRows() {
+        var selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+        if (selectedCheckboxes.length === 0) {
+            alert('Please select at least one row to print.');
+            return;
+        }
+
+        var allRows = document.querySelectorAll('#reportTable tbody tr');
+        
+        // Hide unselected rows temporarily
+        allRows.forEach(row => {
+            var cb = row.querySelector('.row-checkbox');
+            if (cb && !cb.checked) {
+                row.style.display = 'none';
+            }
+        });
+
+        // Trigger Browser Print Dialog
+        window.print();
+
+        // Restore hidden rows back after printing
+        allRows.forEach(row => {
+            row.style.display = '';
+        });
+    }
+</script>
