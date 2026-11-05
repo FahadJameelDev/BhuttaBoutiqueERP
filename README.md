@@ -9,17 +9,6 @@
 An enterprise-grade, comprehensive ERP system specifically architected for the **Tailoring and Boutique industry**. Built on **ASP.NET Core MVC (.NET 10)** with **Razor Views** for server-side rendering, backed by **Entity Framework Core 10** and **SQL Server**. The application features a highly responsive UI built with **Bootstrap 5** and dynamic client-side interactions via **AJAX/jQuery**. It seamlessly unifies complex workflows including Sales, Inventory, Production, HR/Payroll, and Financial Reporting into a single, cohesive platform.
 
 
-## 🏗️ Architecture Overview
-
-The system is designed following **Clean Architecture** principles within a single ASP.NET Core MVC project. This ensures a strict separation of concerns, decoupling the UI from the Business Logic and Data Access layers.
-
-```text
-[ Presentation Layer ]  <--->  [ Business Logic Layer ]  <--->  [ Data Access Layer ]
-   Razor Views & AJAX             Service Layer (Interfaces)         EF Core & SQL Server
-   Bootstrap 5 UI                 Dependency Injection               Normalized Schema
-   Thin Controllers               LINQ Aggregations                  ApplicationDbContext
-```
-
 ### 📂 Backend Project Breakdown
 
 The backend is structured as a robust, enterprise-grade ASP.NET Core MVC application, strictly following the **Service Layer Pattern** to keep controllers thin and business logic isolated.
