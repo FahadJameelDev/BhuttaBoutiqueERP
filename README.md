@@ -45,7 +45,8 @@ The frontend is not a disconnected SPA (like React), but a highly optimized **Se
     *   This provides a **Single Page Application (SPA) feel** without the heavy overhead of a JS framework.
 *   **Custom UI/UX:** 
     * 
-
+🗄️ Database Entity-Relationship (ER) Diagrams
+The database is highly normalized and designed using Entity Framework Core (Code-First). To keep the diagrams readable, the model is categorized into logical modules.
 
 
 
