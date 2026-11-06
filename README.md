@@ -92,7 +92,7 @@ The frontend is not a disconnected SPA (like React), but a highly optimized **Se
     *   Instead of full-page reloads, critical operations (like fetching a customer's measurement, submitting a payment, or updating stock) happen asynchronously via AJAX.
     *   This provides a **Single Page Application (SPA) feel** without the heavy overhead of a JS framework.
 *   **Custom UI/UX:** 
-    *   *(Yahan aap apna baqi text likh sakte hain jo aapne adhoora chhora tha)*
+    *   *The UI is heavily customized with a premium Microsoft Fluent-inspired design system (Custom CSS variables, cards, and modals), ensuring a professional look for the boutique staff.*
 
 ---
 
