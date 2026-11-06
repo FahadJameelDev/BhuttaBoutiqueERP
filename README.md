@@ -47,15 +47,6 @@ The frontend is not a disconnected SPA (like React), but a highly optimized **Se
 *   **Custom UI/UX:** 
     *   The UI is heavily customized with a premium Microsoft Fluent-inspired design system (Custom CSS variables, cards, and modals), ensuring a professional look for the boutique staff.
 ```
-Fahad bhai, aapne bilkul theek kaha. Aap chahte hain ke README mein **Database (ER) Diagrams**, **Security**, aur **Architecture** ka section bilkul waisa hi **Top-Notch** ho jaisa aapne reference screenshot mein dikhaya hai (jisme boxes, lines, aur professional design hai).
-
-Kyunke aapke paas **AppDbContext** ka poora code hai, main uske mutabiq aapko **Mermaid.js** ka exact code de raha hoon. Yeh GitHub par **automatically boxes aur lines** bana dega.
-
-Aap apni `README.md` file kholiye aur jahan bhi yeh sections (Architecture, ER Diagram, Security) hain, unko **delete karke** yeh naya code paste kar dein.
-
----
-🏗️ Architecture Overview (Professional Diagram)
-Yeh aapke "Thin Controllers + Service Layer" (Clean Architecture) ko dikhayega.
 ## 🏗️ Architecture Overview
 
 The system is designed following **Clean Architecture** principles within a single ASP.NET Core MVC project. The business logic is decoupled from the UI and Data Access layers, ensuring a highly maintainable and testable codebase.
@@ -94,4 +85,5 @@ graph TD
     D --> DB
     S --> M
     C --> M
+
 
