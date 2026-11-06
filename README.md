@@ -7,6 +7,44 @@
 ![Architecture](https://img.shields.io/badge/Architecture-Clean_Code-brightgreen?style=flat-square)
 
 An enterprise-grade, comprehensive ERP system specifically architected for the **Tailoring and Boutique industry**. Built on **ASP.NET Core MVC (.NET 10)** with **Razor Views** for server-side rendering, backed by **Entity Framework Core 10** and **SQL Server**. The application features a highly responsive UI built with **Bootstrap 5** and dynamic client-side interactions via **AJAX/jQuery**. It seamlessly unifies complex workflows including Sales, Inventory, Production, HR/Payroll, and Financial Reporting into a single, cohesive platform.
+## 🏗️ Architecture Overview
+
+The system is designed following **Clean Architecture** principles within a single ASP.NET Core MVC project. The business logic is decoupled from the UI and Data Access layers, ensuring a highly maintainable and testable codebase.
+
+```mermaid
+graph TD
+    classDef ui fill:#d4edda,stroke:#28a745,stroke-width:2px;
+    classDef logic fill:#cce5ff,stroke:#007bff,stroke-width:2px;
+    classDef data fill:#f8d7da,stroke:#dc3545,stroke-width:2px;
+    classDef models fill:#fff3cd,stroke:#ffc107,stroke-width:2px;
+
+    subgraph Presentation_Layer [Presentation Layer]
+        V[Razor Views .cshtml]:::ui
+        J[wwwroot/ - AJAX, jQuery, CSS]:::ui
+        C[Controllers/ - Thin Controllers]:::ui
+    end
+
+    subgraph Business_Logic_Layer [Business Logic Layer]
+        S[Services/ - Interfaces & Implementations]:::logic
+        F[Filters/ - Global Exception & Audit]:::logic
+    end
+
+    subgraph Data_Access_Layer [Data Access Layer]
+        D[Data/ - AppDbContext]:::data
+        DB[(SQL Server Database)]:::data
+    end
+
+    subgraph Domain_Models [Domain Models]
+        M[Models/ - Entities & ViewModels]:::models
+    end
+
+    V --> C
+    J --> C
+    C --> S
+    S --> D
+    D --> DB
+    S --> M
+    C --> M
 
 
 ### 📂 Backend Project Breakdown
