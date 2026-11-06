@@ -12,10 +12,6 @@ An enterprise-grade, comprehensive ERP system specifically architected for the *
 
 ---
 
-### 🏗️ Architecture Overview (Professional Diagram)
-Yeh aapke "Thin Controllers + Service Layer" (Clean Architecture) ko dikhayega.
-
-```markdown
 ## 🏗️ Architecture Overview
 
 The system is designed following **Clean Architecture** principles within a single ASP.NET Core MVC project. The business logic is decoupled from the UI and Data Access layers, ensuring a highly maintainable and testable codebase.
