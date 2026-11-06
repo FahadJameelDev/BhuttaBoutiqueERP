@@ -55,49 +55,6 @@ Aap apni `README.md` file kholiye aur jahan bhi yeh sections (Architecture, ER D
 
 ---
 
-### 🏗️ Architecture Overview (Professional Diagram)
-Yeh aapke "Thin Controllers + Service Layer" (Clean Architecture) ko dikhayega.
-
-```markdown
-## 🏗️ Architecture Overview
-
-The system is designed following **Clean Architecture** principles within a single ASP.NET Core MVC project. The business logic is decoupled from the UI and Data Access layers, ensuring a highly maintainable and testable codebase.
-
-```mermaid
-graph TD
-    classDef ui fill:#d4edda,stroke:#28a745,stroke-width:2px;
-    classDef logic fill:#cce5ff,stroke:#007bff,stroke-width:2px;
-    classDef data fill:#f8d7da,stroke:#dc3545,stroke-width:2px;
-    classDef models fill:#fff3cd,stroke:#ffc107,stroke-width:2px;
-
-    subgraph Presentation_Layer [Presentation Layer]
-        V[Razor Views .cshtml]:::ui
-        J[wwwroot/ - AJAX, jQuery, CSS]:::ui
-        C[Controllers/ - Thin Controllers]:::ui
-    end
-
-    subgraph Business_Logic_Layer [Business Logic Layer]
-        S[Services/ - Interfaces & Implementations]:::logic
-        F[Filters/ - Global Exception & Audit]:::logic
-    end
-
-    subgraph Data_Access_Layer [Data Access Layer]
-        D[Data/ - AppDbContext]:::data
-        DB[(SQL Server Database)]:::data
-    end
-
-    subgraph Domain_Models [Domain Models]
-        M[Models/ - Entities & ViewModels]:::models
-    end
-
-    V --> C
-    J --> C
-    C --> S
-    S --> D
-    D --> DB
-    S --> M
-    C --> M
-```
 
 ---
 
@@ -189,13 +146,7 @@ The system features an automated, transactional auditing design at the database 
 
 ---
 
-### 🚦 Aap Ab Kya Karein?
-1. GitHub par **Pencil (Edit)** icon dabayein.
-2. Purane saare sections (Architecture, ER Diagram, Security) delete kar dein.
-3. Upar wala yeh naya code paste karein.
-4. **Commit changes** daba dein.
 
-Ab aapki README mein **professional Mermaid diagrams** honge jo bilkul aapke reference image jaisa design dikhayenge! ✅
 
 
 
